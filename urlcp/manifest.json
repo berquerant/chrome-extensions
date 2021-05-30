@@ -1,0 +1,28 @@
+{
+  "author": "berquerant",
+  "manifest_version": 2,
+  "name": "urlcp",
+  "description": "Copy link and its text at once.",
+  "homepage_url": "https://github.com/berquerant/chrome-extensions/urlcp",
+  "version": "0.1",
+  "version_name": "head 0.1",
+  "icons": {
+    "128": "ucp_128.png"
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": false
+  },
+  "permissions": [
+    "contextMenus",
+    "tabs",
+    "activeTab",
+    "clipboardWrite"
+  ],
+  "browser_action": {
+    "default_title": "Copy Head",
+    "default_popup": "popup.html"
+  }
+}
