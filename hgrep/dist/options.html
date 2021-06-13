@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>hgrep options</title>
+    <script src="options.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <h1 class="col">hgrep options</h1>
+      </div>
+      <hr />
+
+      <div class="row">
+        <h2 class="col">Sort Type</h2>
+        <div class="col">
+          <label>
+            <input name="sort-type" type="radio" value="lastVisitTime" />
+            Last visit time
+          </label>
+          <label>
+            <input name="sort-type" type="radio" value="visitCount" />
+            Visit count
+          </label>
+        </div>
+      </div>
+      <hr />
+
+      <div class="row">
+        <h2 class="col">Query Type</h2>
+        <div class="col">
+          <label>
+            <input name="query-type" type="radio" value="raw" />
+            Raw
+          </label>
+          <label>
+            <input name="query-type" type="radio" value="regex" />
+            Regex
+          </label>
+          <label>
+            <input name="query-type" type="radio" value="glob" />
+            Glob
+          </label>
+        </div>
+      </div>
+      <hr />
+
+      <div class="row">
+        <h2 class="col">Query Target Type</h2>
+        <div class="col">
+          <label>
+            <input name="query-target-type" type="radio" value="title" />
+            Title
+          </label>
+          <label>
+            <input name="query-target-type" type="radio" value="url" />
+            Url
+          </label>
+        </div>
+      </div>
+      <hr />
+
+      <div class="row">
+        <h2 class="col">Query Start Time Hours Back</h2>
+        <div class="col">
+          <input
+            id="query-start-time-before-hour"
+            type="number"
+            min="1"
+            step="1"
+            value="1"
+            required
+          />
+        </div>
+      </div>
+      <hr />
+
+      <div class="row">
+        <h2 class="col">Query Max Result</h2>
+        <div class="col">
+          <input
+            id="query-max-result"
+            type="number"
+            min="1"
+            step="1"
+            value="1"
+            required
+          />
+        </div>
+      </div>
+      <hr />
+
+      <div class="row">
+        <h2 class="col">Query Source Max Result</h2>
+        <div class="col">
+          <input
+            id="query-source-max-result"
+            type="number"
+            min="1"
+            step="1"
+            value="1"
+            required
+          />
+        </div>
+      </div>
+      <hr />
+
+      <div class="row">
+        <div class="col"></div>
+        <div class="col">
+          <button id="save-options" class="btn btn-success">Save</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

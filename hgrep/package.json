@@ -1,0 +1,52 @@
+{
+  "name": "hgrep",
+  "version": "0.1.0",
+  "author": "berquerant",
+  "description": "Grep history of visited pages",
+  "homepage": "https://github.com/berquerant/chrome-extensions/hgrep",
+  "scripts": {
+    "build": "webpack --config webpack.prod.js",
+    "watch": "webpack -w --config webpack.dev.js",
+    "dev:build": "webpack --config webpack.dev.js",
+    "dev:doc": "typedoc",
+    "dev:test": "jest --coverage",
+    "dev:format": "prettier --write .",
+    "dev:lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "dev": "npm-run-all -l --silent --max-parallel 4 -p dev:*"
+  },
+  "devDependencies": {
+    "@popperjs/core": "^2.9.2",
+    "@testing-library/react-hooks": "^7.0.0",
+    "@types/chrome": "0.0.143",
+    "@types/jest": "^26.0.23",
+    "@types/react": "^17.0.8",
+    "@types/react-dom": "^17.0.5",
+    "@typescript-eslint/eslint-plugin": "^4.26.0",
+    "@typescript-eslint/parser": "^4.26.0",
+    "bootstrap": "^5.0.1",
+    "css-loader": "^5.2.6",
+    "eslint": "^7.28.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-jest": "^24.3.6",
+    "eslint-plugin-prettier": "^3.4.0",
+    "jest": "^27.0.4",
+    "node-sass": "^6.0.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.3.1",
+    "sass-loader": "^12.0.0",
+    "style-loader": "^2.0.0",
+    "ts-jest": "^27.0.3",
+    "ts-loader": "^9.2.2",
+    "ts-node": "^10.0.0",
+    "typedoc": "^0.20.36",
+    "typescript": "^4.2.0",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0",
+    "webpack-merge": "^5.7.3"
+  },
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-bootstrap": "^1.6.1",
+    "react-dom": "^17.0.2"
+  }
+}

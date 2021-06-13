@@ -1,0 +1,14 @@
+{
+  "verbose": true,
+  "moduleFileExtensions": ["js", "ts", "tsx"],
+  "transform": {
+    "^.+\\.(ts|tsx)$": "ts-jest"
+  },
+  "testEnvironment": "jsdom",
+  "globals": {
+    "ts-jest": {
+      "tsconfig": "tsconfig.json"
+    }
+  },
+  "testMatch": ["**/__tests__/*.spec.+(ts|tsx|js)"]
+}

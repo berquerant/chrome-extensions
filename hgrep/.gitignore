@@ -1,0 +1,7 @@
+node_modules/
+docs/
+build/
+coverage/
+tmp/
+dist/popup.js
+dist/options.js
