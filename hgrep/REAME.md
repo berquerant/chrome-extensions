@@ -7,6 +7,8 @@ Search the history of visited pages.
 1. Click the icon of hgrep, a popup opens.
 2. Type search word.
 
+Click a X mark at the bottom right of a history, delete the history.
+
 # Options
 
 ## Sort Type

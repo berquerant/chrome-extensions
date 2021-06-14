@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import * as Search from "./Search";
 import * as State from "../common/State";
+import * as Delete from "../common/Delete";
 import * as Err from "../common/Error";
 import {
   HistorySearcher,
@@ -42,7 +43,7 @@ function Alert(props: {
 }
 
 /** Search box for query visited pages history. */
-function SearchBox(props: { onChange: (_: string) => void }) {
+function SearchBox(props: { onChange: (word: string) => void }) {
   const [word, setWord] = React.useState("");
   const debounceDelayMilliSec = 300;
   // debounce search word changes
@@ -60,7 +61,7 @@ function SearchBox(props: { onChange: (_: string) => void }) {
 }
 
 /** A result item of query of history. */
-function Item(props: { item: ISearchResultItem }) {
+function Item(props: { item: ISearchResultItem; onClose?: () => void }) {
   const item = props.item;
   const url = item.url;
   const title = item.title || "No title.";
@@ -92,6 +93,21 @@ function Item(props: { item: ISearchResultItem }) {
     }
     return v.join(" ");
   };
+  const genButton = () => {
+    if (props.onClose) {
+      const b = (
+        <button
+          type="button"
+          className="btn-close item-close-button"
+          aria-label="Close"
+          onClick={() => props.onClose()}
+        />
+      );
+      return { exist: true, button: b };
+    }
+    return { exist: false };
+  };
+  const b = genButton();
   return (
     <div className="row card item-card">
       <div className="card-body">
@@ -99,20 +115,41 @@ function Item(props: { item: ISearchResultItem }) {
         <p className="card-subtitle mb-2 text-mutated item-card-subtitle">
           {url}
         </p>
-        <p className="card-text item-card-text">{options()}</p>
+        <div className="card-text item-card-text">
+          {options()}
+          {b.exist && b.button}
+        </div>
       </div>
     </div>
   );
 }
 
 /** Results of query of history. */
-function ItemList(props: { items: ReadonlyArray<ISearchResultItem> }) {
+function ItemList(props: {
+  items: ReadonlyArray<ISearchResultItem>;
+  genItemOnClose: (url: string) => () => void;
+}) {
   const items = props.items;
+  const genOnClose = (url?: string) => {
+    if (url) {
+      return {
+        exist: true,
+        callback: props.genItemOnClose(url),
+      };
+    }
+    return { exist: false };
+  };
   const list = () => {
     if (items.length == 0) {
       return <div className="no-item">No results.</div>;
     }
-    return items.map((x) => <Item key={x.id} item={x} />);
+    return items.map((x) => {
+      const onClose = genOnClose(x.url);
+      if (onClose.exist) {
+        return <Item key={x.id} item={x} onClose={() => onClose.callback()} />;
+      }
+      return <Item key={x.id} item={x} />;
+    });
   };
   return <div className="item-list">{list()}</div>;
 }
@@ -125,6 +162,7 @@ function ItemCount(props: { count: number }) {
 interface IContentProps {
   newSearcher: (config: State.IOptionListState) => Search.ISearcher;
   newBuilder: () => State.IOptionListStateBuilder;
+  deleter: Delete.IHistoryDeleter;
   storage: State.IOptionListStateStorage;
   storageEventManager: State.IOptionListStateEventOnChanged;
 }
@@ -210,6 +248,13 @@ class Content extends React.Component<IContentProps, IContentState> {
     this.handleWordChange();
   }
 
+  genHandleItemOnClose(url: string): () => void {
+    return () => {
+      this.props.deleter.deleteUrl({ url: url });
+      this.handleWordChange();
+    };
+  }
+
   render() {
     const items = this.state.result.items;
     const opt = (
@@ -237,7 +282,10 @@ class Content extends React.Component<IContentProps, IContentState> {
         </div>
         <div className="row result">
           <div className="col">
-            <ItemList items={items} />
+            <ItemList
+              items={items}
+              genItemOnClose={(url: string) => this.genHandleItemOnClose(url)}
+            />
           </div>
         </div>
       </div>
@@ -253,6 +301,7 @@ export default function Popup() {
   const history = new HistorySearcher();
   const newSearcher = (config: State.IOptionListState) =>
     new Search.Searcher(history, config);
+  const deleter = new Delete.HistoryDeleter();
   const storage = new State.OptionListStateStorage(
     newBuilder,
     () => new State.OptionListStateFlattener(),
@@ -263,6 +312,7 @@ export default function Popup() {
     <Content
       newBuilder={newBuilder}
       newSearcher={newSearcher}
+      deleter={deleter}
       storage={storage}
       storageEventManager={storageEventManager}
     />

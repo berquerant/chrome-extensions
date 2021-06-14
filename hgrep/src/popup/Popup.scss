@@ -23,6 +23,14 @@ body {
 
 .item-card-text {
   font-size: xx-small;
+  display: flex;
+  align-items: flex-end;
+}
+
+.item-close-button {
+  font-size: large;
+  position: absolute;
+  right: 10px;
 }
 
 // for other info
