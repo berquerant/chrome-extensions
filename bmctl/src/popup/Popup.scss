@@ -1,0 +1,81 @@
+@import "~bootstrap/scss/bootstrap.scss";
+
+body {
+  width: 400px;
+  margin: 0;
+  padding: 0;
+  min-height: 360px; // dirty, for setting ui on popup
+}
+
+// for search result
+.item-card:hover {
+  background: #73b8e2;
+}
+
+.item-card-title {
+  font-size: small;
+}
+
+.item-card-subtitle {
+  font-size: x-small;
+}
+
+.item-card-text {
+  font-size: xx-small;
+  display: flex;
+  align-items: flex-end;
+}
+
+.item-close-button {
+  font-size: large;
+  position: absolute;
+  right: 10px;
+}
+
+// for information
+.popup-alert {
+  font-size: x-small;
+}
+
+.item-count {
+  font-size: small;
+}
+
+.search-duration {
+  font-size: small;
+  margin-left: 10px;
+}
+
+// for search box
+.search-box {
+  width: 100%;
+  height: 100%;
+}
+
+// for options
+.option-table-row {
+  font-size: x-small;
+  vertical-align: middle;
+}
+
+.option-table-select {
+  width: 100%;
+}
+
+.option-table-input {
+  width: 100%;
+}
+
+.option-table {
+  margin: 0;
+}
+
+.save-options {
+  font-size: x-small;
+  width: 100%;
+}
+
+.reset-options {
+  font-size: x-small;
+  width: 100%;
+}

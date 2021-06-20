@@ -1,0 +1,9 @@
+tmp
+node_modules
+dist
+build
+coverage
+docs
+webpack.*.js
+.eslintrc.js
+__tests__

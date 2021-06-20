@@ -1,0 +1,15 @@
+@import "~bootstrap/scss/bootstrap.scss";
+
+.option-page-row {
+  display: flex;
+  align-items: baseline;
+  font-size: x-large;
+}
+
+#save-options {
+  width: 100%;
+}
+
+#reset-options {
+  width: 100%;
+}
