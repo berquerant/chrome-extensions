@@ -5,11 +5,17 @@ Search the bookmarks.
 # Usage
 
 1. Click the icon of bmctl, a popup opens.
-2. Type search word.
+2. Type search word in text box.
 
 Click a X mark at the bottom right of a bookmark, delete the bookmark.
 
 # Options
+
+Click `Settings` button on a popup, or click options, then you can change the settings.
+
+Click `Reset` button to set the settings default values in the settings page.
+
+Click `Save` button to apply the settings.
 
 ## Query Type
 
@@ -80,6 +86,18 @@ Include specified date.
 
 Newest creation time of search target.
 Include specified date.
+
+# Operation
+
+Click `Operation` button to open a modal for operation to the current search result.
+
+Click `All` button to check all items.
+
+Click `Clear` button to uncheck all items.
+
+Click `Export` button to display checked items as json.
+
+Click `Delete` button to delete checked items.
 
 # Install
 

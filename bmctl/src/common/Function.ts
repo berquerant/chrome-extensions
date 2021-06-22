@@ -21,6 +21,12 @@ export type Some<T> = {
   ok: true;
   value: T;
 };
+export function Some<T>(value: T): Some<T> {
+  return {
+    ok: true,
+    value: value,
+  };
+}
 /** Limited Maybe. Due to optional parameters are difficult to use in bmctl context. */
 export type Option<T> = Some<T> | None;
 
@@ -32,10 +38,22 @@ export type Err = {
   ok: false;
   value: Error;
 };
+export function Err(value: Error): Err {
+  return {
+    ok: false,
+    value: value,
+  };
+}
 export type Ok<T> = {
   ok: true;
   value: T;
 };
+export function Ok<T>(value: T): Ok<T> {
+  return {
+    ok: true,
+    value: value,
+  };
+}
 /** Limited Either. */
 export type Result<T> = Ok<T> | Err;
 

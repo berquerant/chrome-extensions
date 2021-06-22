@@ -1,74 +1,38 @@
 import * as State from "../State";
 import * as Search from "../../bookmarks/Search";
-import * as Func from "../../common/Function";
+import { None, Some, Ok } from "../../common/Function";
 
 describe("toNumberoptional", () => {
   const tests = [
     {
       name: "undefined into none",
       value: undefined,
-      want: {
-        ok: true,
-        value: Func.None,
-      },
+      want: Ok(None),
     },
     {
       name: "number",
       value: 10,
-      want: {
-        ok: true,
-        value: {
-          ok: true,
-          value: 10,
-        },
-      },
+      want: Ok(Some(10)),
     },
     {
       name: "string",
       value: "10",
-      want: {
-        ok: true,
-        value: {
-          ok: true,
-          value: 10,
-        },
-      },
+      want: Ok(Some(10)),
     },
     {
       name: "none to none",
-      value: Func.None,
-      want: {
-        ok: true,
-        value: Func.None,
-      },
+      value: None,
+      want: Ok(None),
     },
     {
       name: "some of number",
-      value: {
-        ok: true,
-        value: 10,
-      },
-      want: {
-        ok: true,
-        value: {
-          ok: true,
-          value: 10,
-        },
-      },
+      value: Some(10),
+      want: Ok(Some(10)),
     },
     {
       name: "some of string",
-      value: {
-        ok: true,
-        value: "10",
-      },
-      want: {
-        ok: true,
-        value: {
-          ok: true,
-          value: 10,
-        },
-      },
+      value: Some("10"),
+      want: Ok(Some(10)),
     },
   ];
   for (const { name, value, want } of tests) {
@@ -83,18 +47,12 @@ describe("toQueryType", () => {
     {
       name: "identity",
       value: Search.QueryType.Raw,
-      want: {
-        ok: true,
-        value: Search.QueryType.Raw,
-      },
+      want: Ok(Search.QueryType.Raw),
     },
     {
       name: "accept string",
       value: "raw",
-      want: {
-        ok: true,
-        value: Search.QueryType.Raw,
-      },
+      want: Ok(Search.QueryType.Raw),
     },
   ];
   for (const { name, value, want } of tests) {
@@ -114,18 +72,12 @@ describe("toQueryTargetType", () => {
     {
       name: "identity",
       value: Search.QueryTargetType.Url,
-      want: {
-        ok: true,
-        value: Search.QueryTargetType.Url,
-      },
+      want: Ok(Search.QueryTargetType.Url),
     },
     {
       name: "accept string",
       value: "url",
-      want: {
-        ok: true,
-        value: Search.QueryTargetType.Url,
-      },
+      want: Ok(Search.QueryTargetType.Url),
     },
   ];
   for (const { name, value, want } of tests) {
@@ -145,18 +97,12 @@ describe("toSortType", () => {
     {
       name: "identity",
       value: Search.SortType.Url,
-      want: {
-        ok: true,
-        value: Search.SortType.Url,
-      },
+      want: Ok(Search.SortType.Url),
     },
     {
       name: "accept string",
       value: "url",
-      want: {
-        ok: true,
-        value: Search.SortType.Url,
-      },
+      want: Ok(Search.SortType.Url),
     },
   ];
   for (const { name, value, want } of tests) {
@@ -176,18 +122,12 @@ describe("toSortOrderType", () => {
     {
       name: "identity",
       value: Search.SortOrderType.Desc,
-      want: {
-        ok: true,
-        value: Search.SortOrderType.Desc,
-      },
+      want: Ok(Search.SortOrderType.Desc),
     },
     {
       name: "accept string",
       value: "desc",
-      want: {
-        ok: true,
-        value: Search.SortOrderType.Desc,
-      },
+      want: Ok(Search.SortOrderType.Desc),
     },
   ];
   for (const { name, value, want } of tests) {
@@ -210,13 +150,10 @@ describe("toFilterType", () => {
         kind: "before",
         timestamp: 10,
       },
-      want: {
-        ok: true,
-        value: {
-          kind: "before",
-          timestamp: 10,
-        },
-      },
+      want: Ok({
+        kind: "before",
+        timestamp: 10,
+      }),
     },
     {
       name: "accept string timestamp",
@@ -224,13 +161,10 @@ describe("toFilterType", () => {
         kind: "after",
         timestamp: "10",
       },
-      want: {
-        ok: true,
-        value: {
-          kind: "after",
-          timestamp: 10,
-        },
-      },
+      want: Ok({
+        kind: "after",
+        timestamp: 10,
+      }),
     },
   ];
   for (const { name, value, want } of tests) {
@@ -267,8 +201,8 @@ describe("IOptionStateBuilder", () => {
     sortType: Search.SortType.Timestamp,
     sortOrderType: Search.SortOrderType.Desc,
     filters: [],
-    queryMaxResult: Func.None,
-    querySourceMaxResult: Func.None,
+    queryMaxResult: None,
+    querySourceMaxResult: None,
   };
   const raw = {
     queryType: "regex",
@@ -281,14 +215,8 @@ describe("IOptionStateBuilder", () => {
         timestamp: 1,
       },
     ],
-    queryMaxResult: {
-      ok: true,
-      value: 2,
-    },
-    querySourceMaxResult: {
-      ok: true,
-      value: 3,
-    },
+    queryMaxResult: Some(2),
+    querySourceMaxResult: Some(3),
   };
   const native = {
     queryType: Search.QueryType.Regex,
@@ -301,14 +229,8 @@ describe("IOptionStateBuilder", () => {
         timestamp: 1,
       },
     ],
-    queryMaxResult: {
-      ok: true,
-      value: 2,
-    },
-    querySourceMaxResult: {
-      ok: true,
-      value: 3,
-    },
+    queryMaxResult: Some(2),
+    querySourceMaxResult: Some(3),
   };
   it("default build", () => {
     expect(State.newIOptionStateBuilder().build()).toEqual(defaultNative);

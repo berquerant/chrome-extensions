@@ -2,16 +2,10 @@ import * as Func from "../Function";
 
 describe("toNumber", () => {
   it("accept number", () => {
-    expect(Func.toNumber(1)).toEqual({
-      ok: true,
-      value: 1,
-    });
+    expect(Func.toNumber(1)).toEqual(Func.Some(1));
   });
   it("accept string", () => {
-    expect(Func.toNumber("2")).toEqual({
-      ok: true,
-      value: 2,
-    });
+    expect(Func.toNumber("2")).toEqual(Func.Some(2));
   });
   const failures = [
     {

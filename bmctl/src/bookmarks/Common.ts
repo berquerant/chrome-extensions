@@ -1,3 +1,5 @@
+import { Option, Some, None } from "../common/Function";
+
 /** The ID of [[INode]]. */
 export type NodeId = string;
 
@@ -26,7 +28,7 @@ export function nodeListToMap(xs: INodeList): INodeMap {
 
 /** A `Map<NodeId, INode>` wrapper. */
 export interface INodeMap {
-  get(id: NodeId): { ok: boolean; node?: INode };
+  get(id: NodeId): Option<INode>;
   set(node: INode): void;
   delete(id: NodeId): void;
   size(): number;
@@ -42,12 +44,9 @@ class NodeMap implements INodeMap {
   constructor() {
     this.d = new Map();
   }
-  get(id: NodeId): { ok: boolean; node?: INode } {
+  get(id: NodeId): Option<INode> {
     const v = this.d.get(id);
-    if (v === undefined) {
-      return { ok: false };
-    }
-    return { ok: true, node: v };
+    return v !== undefined ? Some(v) : None;
   }
   set(node: INode): void {
     this.d.set(node.id, node);

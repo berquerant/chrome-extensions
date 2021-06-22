@@ -5,7 +5,15 @@ import {
   SortType,
   FilterType,
 } from "../bookmarks/Search";
-import { Result, toNumber, Option, None } from "../common/Function";
+import {
+  Result,
+  Ok,
+  Err,
+  toNumber,
+  Option,
+  None,
+  Some,
+} from "../common/Function";
 import { BaseError } from "../common/Err";
 import * as Log from "../log/Log";
 
@@ -38,10 +46,10 @@ export class InvalidQueryTypeError extends BaseError {}
 export function toQueryType(v: unknown): Result<QueryType> {
   for (const x of Object.values(QueryType)) {
     if (x == v) {
-      return { ok: true, value: x as QueryType };
+      return Ok(x as QueryType);
     }
   }
-  return { ok: false, value: new InvalidQueryTypeError(String(v)) };
+  return Err(new InvalidQueryTypeError(String(v)));
 }
 
 export class InvalidQueryTargetTypeError extends BaseError {}
@@ -49,10 +57,10 @@ export class InvalidQueryTargetTypeError extends BaseError {}
 export function toQueryTargetType(v: unknown): Result<QueryTargetType> {
   for (const x of Object.values(QueryTargetType)) {
     if (x == v) {
-      return { ok: true, value: x as QueryTargetType };
+      return Ok(x as QueryTargetType);
     }
   }
-  return { ok: false, value: new InvalidQueryTargetTypeError(String(v)) };
+  return Err(new InvalidQueryTargetTypeError(String(v)));
 }
 
 export class InvalidSortTypeError extends BaseError {}
@@ -60,10 +68,10 @@ export class InvalidSortTypeError extends BaseError {}
 export function toSortType(v: unknown): Result<SortType> {
   for (const x of Object.values(SortType)) {
     if (x == v) {
-      return { ok: true, value: x as SortType };
+      return Ok(x as SortType);
     }
   }
-  return { ok: false, value: new InvalidSortTypeError(String(v)) };
+  return Err(new InvalidSortTypeError(String(v)));
 }
 
 export class InvalidSortOrderTypeError extends BaseError {}
@@ -71,10 +79,10 @@ export class InvalidSortOrderTypeError extends BaseError {}
 export function toSortOrderType(v: unknown): Result<SortOrderType> {
   for (const x of Object.values(SortOrderType)) {
     if (x == v) {
-      return { ok: true, value: x as SortOrderType };
+      return Ok(x as SortOrderType);
     }
   }
-  return { ok: false, value: new InvalidSortOrderTypeError(String(v)) };
+  return Err(new InvalidSortOrderTypeError(String(v)));
 }
 
 export class InvalidFilterTypeError extends BaseError {}
@@ -83,65 +91,36 @@ export function toFilterType(v: unknown): Result<FilterType> {
   try {
     if (v["kind"] == "before" || v["kind"] == "after") {
       if (typeof v["timestamp"] === "number") {
-        return {
-          ok: true,
-          value: v as FilterType,
-        };
+        return Ok(v as FilterType);
       }
       if (typeof v["timestamp"] === "string") {
         const ts = parseInt(v["timestamp"]);
         if (!isNaN(ts)) {
-          return {
-            ok: true,
-            value: {
-              kind: v["kind"],
-              timestamp: ts,
-            },
-          };
+          return Ok({
+            kind: v["kind"],
+            timestamp: ts,
+          });
         }
       }
     }
-    return {
-      ok: false,
-      value: new InvalidFilterTypeError(String(v)),
-    };
+    return Err(new InvalidFilterTypeError(String(v)));
   } catch (e) {
-    return {
-      ok: false,
-      value: new InvalidFilterTypeError(`${e} ${v}`),
-    };
+    return Err(new InvalidFilterTypeError(`${e} ${v}`));
   }
 }
 export function toNumberOptional(v: unknown): Result<Option<number>> {
   if (v === undefined) {
-    return {
-      ok: true,
-      value: None,
-    };
+    return Ok(None);
   }
   const result = (u: unknown): Result<Option<number>> => {
     const r = toNumber(u);
-    return r.ok
-      ? {
-          ok: true,
-          value: {
-            ok: true,
-            value: r.value,
-          },
-        }
-      : {
-          ok: false,
-          value: r.value as Error,
-        };
+    return r.ok ? Ok(Some(r.value)) : Err(r.value as Error);
   };
   if (typeof v === "object" && v !== null) {
     // for Option type check
     if ("ok" in v) {
       if (!v["ok"]) {
-        return {
-          ok: true,
-          value: None,
-        };
+        return Ok(None);
       }
       if ("value" in v) {
         return result(v["value"]);

@@ -100,10 +100,7 @@ describe("IOptionStateStorage", () => {
             timestamp: 10,
           },
         ],
-        queryMaxResult: {
-          ok: true,
-          value: 1000,
-        },
+        queryMaxResult: Func.Some(1000),
         querySourceMaxResult: Func.None,
       },
       [
@@ -125,10 +122,7 @@ describe("IOptionStateStorage", () => {
           timestamp: 10,
         },
       ],
-      queryMaxResult: {
-        ok: true,
-        value: 1000,
-      },
+      queryMaxResult: Func.Some(1000),
       querySourceMaxResult: Func.None,
     });
   });
