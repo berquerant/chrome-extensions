@@ -18,3 +18,31 @@ class Remover implements IRemover {
     this.api.remove(id);
   }
 }
+
+/** A bookmark creator. */
+export interface ICreator {
+  /** Create a bookmark. */
+  create(node: Common.ICreateNode): Promise<Common.INode>;
+}
+
+export function newICreator(api: Native.IBookmarksAPI): ICreator {
+  return new Creator(api);
+}
+
+class Creator implements ICreator {
+  constructor(private api: Native.IBookmarksAPI) {}
+
+  async create(node: Common.ICreateNode): Promise<Common.INode> {
+    return this.api.create(node).then((x) => {
+      return {
+        id: x.id,
+        parentId: x.parentId,
+        info: {
+          url: x.url,
+          title: x.title,
+          dateAdded: x.dateAdded,
+        },
+      };
+    });
+  }
+}

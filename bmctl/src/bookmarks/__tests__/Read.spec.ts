@@ -7,6 +7,12 @@ describe("IScanner", () => {
     remove(id: string): Promise<void> {
       throw new Error("Method not implemented.");
     }
+    get(ids: Array<string>): Promise<Array<Native.INode>> {
+      throw new Error("Method not implemented.");
+    }
+    create(node: Native.ICreateNode): Promise<Native.INode> {
+      throw new Error("Method not implemented.");
+    }
     getTree(): Promise<Array<Native.INode>> {
       return new Promise((resolve) => resolve(this.bookmarks));
     }

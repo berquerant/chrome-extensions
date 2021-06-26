@@ -3,12 +3,12 @@ import "bootstrap-datepicker";
 import "./Options.scss";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { OptionPage } from "../common/OptionComponent";
-import { newIOptionStateManager } from "../common/OptionStateStorage";
+import { OptionPage } from "../optionstate/OptionComponent";
+import { newIOptionStateManager } from "../optionstate/OptionStateStorage";
 import {
   OptionTag,
   newIOptionStateDisplayManager,
-} from "../common/OptionStateDisplay";
+} from "../optionstate/OptionStateDisplay";
 import { newIOptionStateStorage } from "../storage/StateStorage";
 import { newLocalStorageArea } from "../storage/Storage";
 import { newIOptionStateBuilder } from "../state/State";

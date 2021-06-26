@@ -1,5 +1,4 @@
 build: # build chrome extension
-	@npm run clean
 	@npm ci
 	@npm run build
 
@@ -8,3 +7,6 @@ dev: # run tasks for development
 
 test: # run tests
 	@npm run test
+
+clean: # clean generated resources
+	@npm run clean

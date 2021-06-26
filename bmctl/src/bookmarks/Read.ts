@@ -1,5 +1,46 @@
 import * as Common from "./Common";
 import * as Native from "./Native";
+import { Some, None } from "../common/Function";
+
+/** A bookmark getter. */
+export interface IGetter {
+  /**
+   * Get bookmarks.
+   * @param ids target bookmark ids
+   * @return found bookmarks
+   **/
+  get(ids: Array<string>): Promise<Common.INodeMap>;
+}
+
+export function newIGetter(api: Native.IBookmarksAPI): IGetter {
+  return new Getter(api);
+}
+
+class Getter implements IGetter {
+  constructor(private api: Native.IBookmarksAPI) {}
+  async get(ids: Array<string>): Promise<Common.INodeMap> {
+    const d = Common.newINodeMap();
+    for (const id of ids) {
+      const r = await this.api
+        .get([id])
+        .then((x) => Some(x[0]))
+        .catch((_) => None);
+      if (r.ok) {
+        const v = r.value;
+        d.set({
+          id: v.id,
+          parentId: v.parentId,
+          info: {
+            url: v.url,
+            title: v.title,
+            dateAdded: v.dateAdded,
+          },
+        });
+      }
+    }
+    return d;
+  }
+}
 
 /** A bookmark scanner. */
 export interface IScanner {

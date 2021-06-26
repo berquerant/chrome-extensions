@@ -8,10 +8,20 @@ export interface INode {
   title: string;
 }
 
+/** A partial structure of chrome.bookmarks.CreateDetails. */
+export interface ICreateNode {
+  parentId?: string;
+  title?: string;
+  /** For folder if undefined. */
+  url?: string;
+}
+
 /** A wrapper of chrome.bookmarks API. */
 export interface IBookmarksAPI {
   getTree(): Promise<Array<INode>>;
   remove(id: string): Promise<void>;
+  get(ids: Array<string>): Promise<Array<INode>>;
+  create(node: ICreateNode): Promise<INode>;
 }
 
 export function newIBookmarksAPI(): IBookmarksAPI {
@@ -24,5 +34,11 @@ class BookmarksAPI implements IBookmarksAPI {
   }
   async remove(id: string): Promise<void> {
     chrome.bookmarks.remove(id);
+  }
+  async get(ids: Array<string>): Promise<Array<INode>> {
+    return chrome.bookmarks.get(ids);
+  }
+  async create(node: ICreateNode): Promise<INode> {
+    return chrome.bookmarks.create(node);
   }
 }

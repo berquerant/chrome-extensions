@@ -50,6 +50,8 @@ export function SelectItems<T>(props: {
   id: string;
   items: { [key: string]: T };
   className?: string;
+  onChange?: (value: string) => void;
+  value?: T;
 }) {
   const options = Object.entries(props.items).map(([k, v]) => (
     <option key={k} value={String(v)}>
@@ -57,7 +59,17 @@ export function SelectItems<T>(props: {
     </option>
   ));
   return (
-    <select id={props.id} key={props.id} className={props.className || ""}>
+    <select
+      id={props.id}
+      key={props.id}
+      className={props.className || ""}
+      onChange={(e) => {
+        if (props.onChange) {
+          props.onChange(e.currentTarget.value);
+        }
+      }}
+      value={props.value ? String(props.value) : ""}
+    >
       {options}
     </select>
   );
@@ -67,14 +79,16 @@ export function SelectItems<T>(props: {
 export function Alert(props: {
   id: string;
   message: JSX.Element;
-  onClose: () => void;
+  onClose?: () => void;
 }) {
-  // add listener after rendering
-  useEffect(() => {
-    document
-      .getElementById(props.id)
-      .addEventListener("close.bs.alert", props.onClose);
-  });
+  if (props.onClose) {
+    // add listener after rendering
+    useEffect(() => {
+      document
+        .getElementById(props.id)
+        .addEventListener("close.bs.alert", props.onClose);
+    });
+  }
   return (
     <div
       id={props.id}
@@ -158,6 +172,58 @@ export function LightModal(props: {
 }
 
 /**
+ * Modal template to display error.
+ * @param triggerTitle title of modal trigger button
+ * @param error error to display
+ * @param onClose hook on close modal
+ */
+export function ErrorModal(props: {
+  triggerTitle: string;
+  error: Error;
+  onClose?: () => void;
+}) {
+  const [show, setShow] = useState(false);
+  const handleClose = () => {
+    setShow(false);
+    if (props.onClose) {
+      props.onClose();
+    }
+  };
+  const handleShow = () => setShow(true);
+  const triggerButton = (
+    <Button onClick={handleShow}>{props.triggerTitle}</Button>
+  );
+  const okButton = <Button onClick={handleClose}>OK</Button>;
+  const modal = (
+    <Modal show={show} onHide={handleClose} animation scrollable>
+      <Modal.Header closeButton>
+        <Modal.Title>{props.error.name}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <div className="error-modal-body-container container">
+          <div className="row">
+            <div className="col">{props.error.message}</div>
+          </div>
+        </div>
+      </Modal.Body>
+      <Modal.Footer>
+        <div className="error-modal-footer-container container">
+          <div className="row">
+            <div className="col">{okButton}</div>
+          </div>
+        </div>
+      </Modal.Footer>
+    </Modal>
+  );
+  return (
+    <>
+      {triggerButton}
+      {modal}
+    </>
+  );
+}
+
+/**
  * Modal to confirm.
  * @param title title of modal
  * @param triggerTitle title of modal trigger button
@@ -168,6 +234,7 @@ export function LightModal(props: {
  * @param cancelStyle style of cancel button
  * @param onOk hook on ok button click
  * @param onCancel hook on cancel button click
+ * @param withoutCancel no cancel button if true
  */
 export function ConfirmModal(props: {
   title: string;
@@ -180,6 +247,7 @@ export function ConfirmModal(props: {
   onOk?: () => void;
   onCancel?: () => void;
   disabled?: boolean;
+  withoutCancel?: boolean;
 }) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -206,6 +274,8 @@ export function ConfirmModal(props: {
     </Button>
   );
 
+  const withoutCancel =
+    props.withoutCancel !== undefined && props.withoutCancel;
   const cancelTitle = props.cancelTitle || "Cancel";
   const cancelStyle = props.cancelStyle || "secondary";
   const onCancelClick = () => {
@@ -214,11 +284,13 @@ export function ConfirmModal(props: {
     }
     handleClose();
   };
-  const cancelButton = (
-    <Button variant={cancelStyle} onClick={onCancelClick} className="col-4">
-      {cancelTitle}
-    </Button>
-  );
+  const cancelButton = withoutCancel
+    ? None
+    : Some(
+        <Button variant={cancelStyle} onClick={onCancelClick} className="col-4">
+          {cancelTitle}
+        </Button>
+      );
 
   const modalHeader = (
     <Modal.Header closeButton>
@@ -230,7 +302,7 @@ export function ConfirmModal(props: {
       <div className="confirm-modal-body-container container">
         <div className="row justify-content-evenly">
           {okButton}
-          {cancelButton}
+          {cancelButton.ok && cancelButton.value}
         </div>
       </div>
     </Modal.Body>

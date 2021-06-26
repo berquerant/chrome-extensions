@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import { SelectItems, DatePicker } from "./Component";
+import { SelectItems, DatePicker } from "../common/Component";
 import { OptionTag, IOptionStateDisplayManager } from "./OptionStateDisplay";
 import { IOptionStateManager } from "./OptionStateStorage";
-import * as Err from "./Err";
+import * as Err from "../common/Err";
 import * as Search from "../bookmarks/Search";
 import * as State from "../state/State";
 

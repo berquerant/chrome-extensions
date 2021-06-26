@@ -95,9 +95,18 @@ Click `All` button to check all items.
 
 Click `Clear` button to uncheck all items.
 
+Click `Import` button to import bookmarks.
+
 Click `Export` button to display checked items as json.
 
 Click `Delete` button to delete checked items.
+
+## Import
+
+1. Select a folder by the select box at left side. This is the parent folder.
+2. Write a json into the text area. The structure of the json is the same as `Export` json.
+3. Click `Show` button to display bookmarks after import.
+4. Click `Import` button to import specified items under the selected folder.
 
 # Install
 

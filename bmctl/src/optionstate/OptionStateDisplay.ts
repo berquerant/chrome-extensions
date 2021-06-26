@@ -1,6 +1,6 @@
 import * as State from "../state/State";
-import * as Time from "./Time";
-import * as Err from "./Err";
+import * as Time from "../common/Time";
+import * as Err from "../common/Err";
 
 class GetError extends Err.BaseError {}
 class SetError extends Err.BaseError {}

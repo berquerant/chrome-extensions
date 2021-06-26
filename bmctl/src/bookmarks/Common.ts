@@ -5,9 +5,20 @@ export type NodeId = string;
 
 /** Info of a bookmark except [[NodeId]]. */
 export interface INodeInfo {
+  /** This Node is a folder if undefined. */
   readonly url?: string;
   readonly title: string;
   readonly dateAdded?: number;
+}
+
+export function isINodeInfo(x: any): x is INodeInfo {
+  return (
+    x &&
+    x.title &&
+    typeof x.title == "string" &&
+    (!x.url || typeof x.url == "string") &&
+    (!x.dateAdded || typeof x.dateAdded == "number")
+  );
 }
 
 /** A flatten bookmark. */
@@ -17,7 +28,29 @@ export interface INode {
   readonly info: INodeInfo;
 }
 
+export function isINode(x: any): x is INode {
+  return (
+    x &&
+    x.id &&
+    typeof x.id == "string" &&
+    isINodeInfo(x.info) &&
+    (!x.parentId || typeof x.parentId == "string")
+  );
+}
+
+/** A request to create node. */
+export interface ICreateNode {
+  readonly parentId?: NodeId;
+  readonly title: string;
+  /** For folder if undefined. */
+  readonly url?: string;
+}
+
 export type INodeList = Array<INode>;
+
+export function isINodeList(x: any): x is INodeList {
+  return x && Array.isArray(x) && Array.from(x).every((e) => isINode(e));
+}
 
 export function nodeListToMap(xs: INodeList): INodeMap {
   return xs.reduce((d, x) => {

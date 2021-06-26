@@ -57,6 +57,14 @@ export function Ok<T>(value: T): Ok<T> {
 /** Limited Either. */
 export type Result<T> = Ok<T> | Err;
 
+export function Try<T>(f: () => T): Result<T> {
+  try {
+    return Ok(f());
+  } catch (e) {
+    return Err(e);
+  }
+}
+
 export function tautology<T>(a: T): boolean {
   return true;
 }

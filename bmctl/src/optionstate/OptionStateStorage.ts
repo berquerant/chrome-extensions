@@ -1,7 +1,7 @@
 import * as State from "../state/State";
 import * as StateStorage from "../storage/StateStorage";
 import { OptionTag, IOptionStateDisplayManager } from "./OptionStateDisplay";
-import * as Err from "./Err";
+import * as Err from "../common/Err";
 
 class UnknownTagError extends Err.UnknownError {}
 
