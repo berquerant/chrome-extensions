@@ -198,7 +198,6 @@ class Content extends React.Component<IContentProps, IContentState> {
       try {
         this.props.newSearcher(state).search(this.word, (result) => {
           this.setState({
-            ...this.state,
             result: result,
           });
         });
@@ -211,7 +210,6 @@ class Content extends React.Component<IContentProps, IContentState> {
   handleCaughtError(e: unknown) {
     if (e instanceof Err.BaseError) {
       this.setState({
-        ...this.state,
         error: e,
       });
       return;
@@ -224,7 +222,6 @@ class Content extends React.Component<IContentProps, IContentState> {
       // reset error on state when closed
       const onClose = () =>
         this.setState({
-          ...this.state,
           error: null,
         });
       const e = this.state.error;
