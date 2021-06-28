@@ -7,6 +7,10 @@ body {
   min-height: 150px; // dirty, for setting ui on popup
 }
 
+.popup-header {
+  background: white;
+}
+
 // for search results
 
 .item-card:hover {

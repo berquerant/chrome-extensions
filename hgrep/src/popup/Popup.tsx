@@ -263,20 +263,22 @@ class Content extends React.Component<IContentProps, IContentState> {
     const alertMsg = this.newAlert(); // display alert when some error exist
     return (
       <div className="container-fluid">
-        <div className="row">
-          <div className="col-3 popover-wrapper">
-            <Popover id="popover-hgrep-options" content={opt} />
+        <header className="popup-header sticky-top">
+          <div className="row">
+            <div className="col-3 popover-wrapper">
+              <Popover id="popover-hgrep-options" content={opt} />
+            </div>
+            <div className="col-9 search">
+              <SearchBox onChange={(w) => this.handleSearchBoxChange(w)} />
+            </div>
           </div>
-          <div className="col-9 search">
-            <SearchBox onChange={(w) => this.handleSearchBoxChange(w)} />
+          <div className="row result-info">
+            <div className="col">
+              <ItemCount count={items.length} />
+            </div>
+            {alertMsg.exist && alertMsg.content}
           </div>
-        </div>
-        <div className="row result-info">
-          <div className="col">
-            <ItemCount count={items.length} />
-          </div>
-          {alertMsg.exist && alertMsg.content}
-        </div>
+        </header>
         <div className="row result">
           <div className="col">
             <ItemList
