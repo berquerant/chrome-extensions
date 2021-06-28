@@ -188,22 +188,27 @@ class Content extends React.Component<IContentProps, IContentState> {
     );
     return (
       <div className="container-fluid">
-        <div className="row">
-          <div className="col-2 popover-wrapper">
-            <CommonComponent.Popover id="popover-bmctl-option" content={opt} />
+        <header className="popup-header sticky-top">
+          <div className="row">
+            <div className="col-2 popover-wrapper">
+              <CommonComponent.Popover
+                id="popover-bmctl-option"
+                content={opt}
+              />
+            </div>
+            <div className="col-2 popover-data-modal">{dataModal}</div>
+            <div className="col-8 search-wrapper">
+              <SearchBox onChange={(w) => this.handleSearchBoxChange(w)} />
+            </div>
           </div>
-          <div className="col-2 popover-data-modal">{dataModal}</div>
-          <div className="col-8 search-wrapper">
-            <SearchBox onChange={(w) => this.handleSearchBoxChange(w)} />
+          <div className="row result-info justify-content-between">
+            <div className="col">
+              <ItemCount count={searchResult.length} />
+              {searchDuration.ok && searchDuration.value}
+            </div>
           </div>
-        </div>
-        <div className="row result-info justify-content-between">
-          <div className="col">
-            <ItemCount count={searchResult.length} />
-            {searchDuration.ok && searchDuration.value}
-          </div>
-        </div>
-        <div className="row result-error">{alert.ok && alert.value}</div>
+          <div className="row result-error">{alert.ok && alert.value}</div>
+        </header>
         <div className="row result">
           <div className="col">
             <ItemList
