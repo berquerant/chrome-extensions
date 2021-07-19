@@ -6,7 +6,7 @@ dev: # run tasks for development
 	@npm run dev
 
 test: # run tests
-	@npm run test
+	@npm run dev:test
 
 clean: # remove generated files
 	@npm run clean
