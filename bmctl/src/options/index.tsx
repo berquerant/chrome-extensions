@@ -1,36 +1,19 @@
 import "bootstrap";
-import "bootstrap-datepicker";
 import "./Options.scss";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { OptionPage } from "../optionstate/OptionComponent";
-import { newIOptionStateManager } from "../optionstate/OptionStateStorage";
-import {
-  OptionTag,
-  newIOptionStateDisplayManager,
-} from "../optionstate/OptionStateDisplay";
 import { newIOptionStateStorage } from "../storage/StateStorage";
 import { newLocalStorageArea } from "../storage/Storage";
 import { newIOptionStateBuilder } from "../state/State";
 
 chrome.tabs.query({ active: true, currentWindow: true }, (_) => {
-  const display = newIOptionStateDisplayManager(newIOptionStateBuilder);
-  const store = newIOptionStateManager(
-    newIOptionStateStorage(newLocalStorageArea(), newIOptionStateBuilder),
-    display
+  const store = newIOptionStateStorage(
+    newLocalStorageArea(),
+    newIOptionStateBuilder
   );
-  const tags = [
-    OptionTag.queryType,
-    OptionTag.queryTargetType,
-    OptionTag.sortType,
-    OptionTag.sortOrderType,
-    OptionTag.queryMaxResult,
-    OptionTag.querySourceMaxResult,
-    OptionTag.filterAfter,
-    OptionTag.filterBefore,
-  ];
   ReactDOM.render(
-    <OptionPage store={store} display={display} tags={tags} />,
+    <OptionPage store={store} newBuilder={newIOptionStateBuilder} />,
     document.getElementById("options")
   );
 });

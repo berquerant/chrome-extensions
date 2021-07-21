@@ -16,7 +16,10 @@ import * as Item from "./Item";
 import { BaseError } from "../common/Err";
 
 /** Modal to display bookmarks. */
-function DisplayItemsModal(props: { id: string; items: BCommon.INodeList }) {
+function DisplayItemsModal(props: {
+  id: string;
+  items: BCommon.INodeList;
+}): JSX.Element {
   const disabled = props.items.length == 0;
   const items = <Item.ItemList items={props.items} />;
   const body = (
@@ -175,7 +178,7 @@ export class ImportModal extends React.Component<
       return Err(new NotImportableError(e));
     }
   }
-  render() {
+  render(): JSX.Element {
     // accept bookmarks as json
     const content = (
       <textarea

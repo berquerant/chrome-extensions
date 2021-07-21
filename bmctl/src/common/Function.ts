@@ -65,7 +65,7 @@ export function Try<T>(f: () => T): Result<T> {
   }
 }
 
-export function tautology<T>(a: T): boolean {
+export function tautology<T>(_: T): boolean {
   return true;
 }
 

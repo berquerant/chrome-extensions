@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
-import "bootstrap";
-import "bootstrap-datepicker";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import ReactPopover from "react-bootstrap/Popover";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { None, Some } from "./Function";
+import "bootstrap-datepicker";
+import $ from "jquery";
+import * as Time from "../common/Time";
 
 /**
  * Limited popover wrapper.
  * Only content of popover and toggle button.
  */
-export function Popover(props: { id: string; content: JSX.Element }) {
+export function Popover(props: {
+  id: string;
+  content: JSX.Element;
+}): JSX.Element {
   const po = (
     <ReactPopover id={props.id}>
       <ReactPopover.Content>{props.content}</ReactPopover.Content>
@@ -28,16 +32,31 @@ export function Popover(props: { id: string; content: JSX.Element }) {
  * Visual date picker wrapper.
  * With clear button.
  */
-export function DatePicker(props: { id: string; className?: string }) {
-  return (
-    <input
-      id={props.id}
-      className={props.className || ""}
-      data-provide="datepicker"
-      data-date-format="yyyy-mm-dd"
-      data-date-clear-btn
-    />
-  );
+export function DatePicker(props: {
+  id: string;
+  className?: string;
+  onChange?: (value: string) => void;
+  value?: string;
+  orientation?: DatepickerOrientations;
+}): JSX.Element {
+  if (props.onChange) {
+    useEffect(() => {
+      const id = `#${props.id}`;
+      $(id)
+        .datepicker({
+          clearBtn: true,
+          format: "yyyy-mm-dd",
+          todayHighlight: true,
+          orientation: props.orientation || "auto",
+        })
+        .on("changeDate", (e) => {
+          const d = e.date;
+          props.onChange(d ? `${Time.dateToTimestring(d)}` : "");
+        });
+      $(id).datepicker("update", props.value || "");
+    });
+  }
+  return <input id={props.id} className={props.className || ""} />;
 }
 
 /**
@@ -52,7 +71,7 @@ export function SelectItems<T>(props: {
   className?: string;
   onChange?: (value: string) => void;
   value?: T;
-}) {
+}): JSX.Element {
   const options = Object.entries(props.items).map(([k, v]) => (
     <option key={k} value={String(v)}>
       {k}
@@ -80,7 +99,7 @@ export function Alert(props: {
   id: string;
   message: JSX.Element;
   onClose?: () => void;
-}) {
+}): JSX.Element {
   if (props.onClose) {
     // add listener after rendering
     useEffect(() => {
@@ -125,7 +144,7 @@ export function LightModal(props: {
   footer?: JSX.Element;
   disabled?: boolean;
   onClose?: () => void;
-}) {
+}): JSX.Element {
   const [show, setShow] = useState(false);
   const handleClose = () => {
     setShow(false);
@@ -181,7 +200,7 @@ export function ErrorModal(props: {
   triggerTitle: string;
   error: Error;
   onClose?: () => void;
-}) {
+}): JSX.Element {
   const [show, setShow] = useState(false);
   const handleClose = () => {
     setShow(false);
@@ -248,7 +267,7 @@ export function ConfirmModal(props: {
   onCancel?: () => void;
   disabled?: boolean;
   withoutCancel?: boolean;
-}) {
+}): JSX.Element {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);

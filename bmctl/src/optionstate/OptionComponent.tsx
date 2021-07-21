@@ -1,29 +1,43 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { SelectItems, DatePicker } from "../common/Component";
-import { OptionTag, IOptionStateDisplayManager } from "./OptionStateDisplay";
-import { IOptionStateManager } from "./OptionStateStorage";
-import * as Err from "../common/Err";
+import * as StateStorage from "../storage/StateStorage";
 import * as Search from "../bookmarks/Search";
 import * as State from "../state/State";
+import * as Time from "../common/Time";
+import * as Err from "../common/Err";
+
+/** A kind of settings. */
+const OptionTag = {
+  queryType: "query-type",
+  queryTargetType: "query-target-type",
+  sortType: "sort-type",
+  sortOrderType: "sort-order-type",
+  filterAfter: "filter-after",
+  filterBefore: "filter-before",
+  querySourceMaxResult: "query-source-max-result",
+  queryMaxResult: "query-max-result",
+  saveButton: "save-options",
+  resetButton: "reset-options",
+} as const;
+type OptionTag = typeof OptionTag[keyof typeof OptionTag];
 
 interface IOptionRowProps {
-  tag: OptionTag;
   title: string;
   content: JSX.Element;
 }
 
-function OptionTableRow(props: IOptionRowProps) {
+function OptionTableRow(props: IOptionRowProps): JSX.Element {
   return (
-    <tr className="option-table-row" key={String(props.tag)}>
+    <tr className="option-table-row">
       <td>{props.title}</td>
       <td>{props.content}</td>
     </tr>
   );
 }
 
-function OptionPageRow(props: IOptionRowProps) {
+function OptionPageRow(props: IOptionRowProps): JSX.Element {
   return (
-    <div className="option-page-row row" key={String(props.tag)}>
+    <div className="option-page-row row">
       <h2 className="col">{props.title}</h2>
       <div className="col">{props.content}</div>
       <hr />
@@ -31,15 +45,22 @@ function OptionPageRow(props: IOptionRowProps) {
   );
 }
 
-/** Tag for option to actual html element mapper. */
-function OptionTableMapper(props: {
+function OptionMapper(props: {
   tag: OptionTag;
-  newRow: (props: IOptionRowProps) => JSX.Element;
+  toRow: (props: IOptionRowProps) => JSX.Element;
+  onChange: (v: string) => void;
+  value: string;
 }) {
   const tag = props.tag;
   const id = String(tag);
   const selectItems = (items: { [key: string]: unknown }) => (
-    <SelectItems id={id} items={items} className="option-table-select" />
+    <SelectItems
+      id={id}
+      items={items}
+      className="option-table-select"
+      onChange={props.onChange}
+      value={props.value}
+    />
   );
   const inputItem = () => (
     <input
@@ -47,18 +68,25 @@ function OptionTableMapper(props: {
       type="number"
       min="1"
       step="1"
-      defaultValue="1"
       className="option-table-input"
-      required
+      value={props.value}
+      onChange={(e) => props.onChange(e.currentTarget.value)}
     />
   );
-  const dateItem = () => <DatePicker id={id} className="option-table-date" />;
+  const dateItem = () => (
+    <DatePicker
+      id={id}
+      className="option-table-date"
+      onChange={props.onChange}
+      value={props.value}
+    />
+  );
   const toRow = (title: string, content: JSX.Element) =>
-    props.newRow({
-      tag: tag,
+    props.toRow({
       title: title,
       content: content,
     });
+
   switch (props.tag) {
     case OptionTag.queryType:
       return toRow("Query Type", selectItems(Search.QueryType));
@@ -80,68 +108,201 @@ function OptionTableMapper(props: {
   throw new Err.UnknownError(`OptionTag: ${tag}`);
 }
 
-interface IOptionCommonProps {
+interface IOptionBaseRenderProps {
   items: Array<JSX.Element>;
   saveBtn: JSX.Element;
   resetBtn: JSX.Element;
 }
 
-function setupOptionCommonSettings(
-  tags: Array<OptionTag>,
-  store: IOptionStateManager,
-  display: IOptionStateDisplayManager,
-  newRow: (props: IOptionRowProps) => JSX.Element,
-  defaultState: State.IOptionState
-): IOptionCommonProps {
-  const items = Object.values(tags).map((x) => (
-    <OptionTableMapper tag={x} newRow={newRow} key={String(x)} />
-  ));
-  const save = (
-    <button
-      id={String(OptionTag.saveButton)}
-      className="btn btn-success"
-      onClick={() => store.write(tags)}
-    >
-      Save
-    </button>
-  );
-  const reset = (
-    <button
-      id={String(OptionTag.resetButton)}
-      className="btn btn-secondary"
-      onClick={() => display.write(defaultState, tags)}
-    >
-      Reset
-    </button>
-  );
-  // read state from storage after rendering
-  useEffect(() => {
-    const f = async () => {
-      await store.read(tags);
-    };
-    f();
-  });
+interface IOptionBaseTableProps {
+  store: StateStorage.IOptionStateStorage;
+  newBuilder: () => State.IOptionStateBuilder;
+  toRow: (props: IOptionRowProps) => JSX.Element;
+  defaultState: IOptionBaseTableState;
+  render: (ps: IOptionBaseRenderProps) => JSX.Element;
+}
+
+interface IOptionBaseTableState {
+  queryType: string;
+  queryTargetType: string;
+  sortType: string;
+  sortOrderType: string;
+  queryMaxResult: string;
+  querySourceMaxResult: string;
+  filterAfter: string;
+  filterBefore: string;
+}
+
+class OptionBase extends React.Component<
+  IOptionBaseTableProps,
+  IOptionBaseTableState
+> {
+  constructor(props: IOptionBaseTableProps) {
+    super(props);
+    this.state = this.props.defaultState;
+  }
+  componentDidMount(): void {
+    this.props.store.read().then((s) => {
+      const bs = {
+        queryType: s.queryType,
+        queryTargetType: s.queryTargetType,
+        sortType: s.sortType,
+        sortOrderType: s.sortOrderType,
+        queryMaxResult: s.queryMaxResult.ok
+          ? String(s.queryMaxResult.value)
+          : "",
+        querySourceMaxResult: s.querySourceMaxResult.ok
+          ? String(s.querySourceMaxResult.value)
+          : "",
+        filterAfter: "",
+        filterBefore: "",
+      };
+      s.filters
+        .filter((x) => x.kind == "after")
+        .forEach((x) => {
+          bs.filterAfter = Time.dateToTimestring(new Date(x.timestamp * 1000));
+        });
+      s.filters
+        .filter((x) => x.kind == "before")
+        .forEach((x) => {
+          bs.filterBefore = Time.dateToTimestring(new Date(x.timestamp * 1000));
+        });
+      this.setState(bs);
+    });
+  }
+  onSave(): void {
+    const s = this.state;
+    const b = this.props
+      .newBuilder()
+      .queryType(s.queryType)
+      .queryTargetType(s.queryTargetType)
+      .sortType(s.sortType)
+      .sortOrderType(s.sortOrderType)
+      .queryMaxResult(s.queryMaxResult || undefined)
+      .querySourceMaxResult(s.querySourceMaxResult || undefined);
+    const filters = [];
+    {
+      const ts = Time.timestringToDate(s.filterAfter);
+      if (ts.ok) {
+        filters.push({
+          kind: "after",
+          timestamp: Math.floor(ts.value.getTime() / 1000),
+        });
+      }
+    }
+    {
+      const ts = Time.timestringToDate(s.filterBefore);
+      if (ts.ok) {
+        filters.push({
+          kind: "before",
+          timestamp: Math.floor(ts.value.getTime() / 1000),
+        });
+      }
+    }
+    b.filters(filters);
+    this.props.store.write(b.build());
+  }
+  render() {
+    const items = this.renderItems();
+    const save = (
+      <button
+        id={String(OptionTag.saveButton)}
+        className="btn btn-success"
+        onClick={() => this.onSave()}
+      >
+        Save
+      </button>
+    );
+    const reset = (
+      <button
+        id={String(OptionTag.resetButton)}
+        className="btn btn-secondary"
+        onClick={() => this.setState(this.props.defaultState)}
+      >
+        Reset
+      </button>
+    );
+    return this.props.render({
+      items: items,
+      saveBtn: save,
+      resetBtn: reset,
+    });
+  }
+  private renderItems(): Array<JSX.Element> {
+    const s = this.state;
+    const settings = [
+      {
+        tag: OptionTag.queryType,
+        value: s.queryType,
+        onChange: (v: string) => this.setState({ queryType: v }),
+      },
+      {
+        tag: OptionTag.queryTargetType,
+        value: s.queryTargetType,
+        onChange: (v: string) => this.setState({ queryTargetType: v }),
+      },
+      {
+        tag: OptionTag.sortType,
+        value: s.sortType,
+        onChange: (v: string) => this.setState({ sortType: v }),
+      },
+      {
+        tag: OptionTag.sortOrderType,
+        value: s.sortOrderType,
+        onChange: (v: string) => this.setState({ sortOrderType: v }),
+      },
+      {
+        tag: OptionTag.queryMaxResult,
+        value: s.queryMaxResult,
+        onChange: (v: string) => this.setState({ queryMaxResult: v }),
+      },
+      {
+        tag: OptionTag.querySourceMaxResult,
+        value: s.querySourceMaxResult,
+        onChange: (v: string) => this.setState({ querySourceMaxResult: v }),
+      },
+      {
+        tag: OptionTag.filterAfter,
+        value: s.filterAfter,
+        onChange: (v: string) => this.setState({ filterAfter: v }),
+      },
+      {
+        tag: OptionTag.filterBefore,
+        value: s.filterBefore,
+        onChange: (v: string) => this.setState({ filterBefore: v }),
+      },
+    ];
+    return settings.map((x) => (
+      <OptionMapper
+        key={String(x.tag)}
+        tag={x.tag}
+        value={x.value}
+        onChange={x.onChange}
+        toRow={this.props.toRow}
+      />
+    ));
+  }
+}
+
+function defaultState(): IOptionBaseTableState {
   return {
-    items: items,
-    saveBtn: save,
-    resetBtn: reset,
+    queryType: Search.QueryType.Raw,
+    queryTargetType: Search.QueryTargetType.Title,
+    sortType: Search.SortType.Timestamp,
+    sortOrderType: Search.SortOrderType.Desc,
+    queryMaxResult: "",
+    querySourceMaxResult: "",
+    filterAfter: "",
+    filterBefore: "",
   };
 }
 
 /** Content for option page. */
 export function OptionPage(props: {
-  tags: Array<OptionTag>;
-  store: IOptionStateManager;
-  display: IOptionStateDisplayManager;
-}) {
-  const r = setupOptionCommonSettings(
-    props.tags,
-    props.store,
-    props.display,
-    (props: IOptionRowProps) => <OptionPageRow {...props} />,
-    State.newIOptionStateBuilder().build()
-  );
-  return (
+  store: StateStorage.IOptionStateStorage;
+  newBuilder: () => State.IOptionStateBuilder;
+}): JSX.Element {
+  const render = (r: IOptionBaseRenderProps) => (
     <div className="container">
       <h1 className="row">bmctl options</h1>
       {r.items}
@@ -153,23 +314,24 @@ export function OptionPage(props: {
       </div>
     </div>
   );
+  return (
+    <OptionBase
+      store={props.store}
+      newBuilder={props.newBuilder}
+      defaultState={defaultState()}
+      render={render}
+      toRow={(x) => <OptionPageRow {...x} />}
+    />
+  );
 }
 
 // Content for settings on popup.
 export function OptionTable(props: {
-  tags: Array<OptionTag>;
-  store: IOptionStateManager;
-  display: IOptionStateDisplayManager;
+  store: StateStorage.IOptionStateStorage;
+  newBuilder: () => State.IOptionStateBuilder;
   additionalClassName?: string;
-}) {
-  const r = setupOptionCommonSettings(
-    props.tags,
-    props.store,
-    props.display,
-    (props: IOptionRowProps) => <OptionTableRow {...props} />,
-    State.newIOptionStateBuilder().build()
-  );
-  return (
+}): JSX.Element {
+  const render = (r: IOptionBaseRenderProps) => (
     <div className="container-fluid">
       <table
         className={`row table option-table ${props.additionalClassName || ""}`}
@@ -181,5 +343,14 @@ export function OptionTable(props: {
         <div className="col">{r.resetBtn}</div>
       </div>
     </div>
+  );
+  return (
+    <OptionBase
+      store={props.store}
+      newBuilder={props.newBuilder}
+      defaultState={defaultState()}
+      render={render}
+      toRow={(x) => <OptionTableRow {...x} />}
+    />
   );
 }

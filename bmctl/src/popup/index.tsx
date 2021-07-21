@@ -1,5 +1,4 @@
 import "bootstrap";
-import "bootstrap-datepicker";
 import React from "react";
 import * as ReactDOM from "react-dom";
 import * as BCommon from "../bookmarks/Common";
@@ -13,8 +12,6 @@ import * as Storage from "../storage/Storage";
 import * as State from "../state/State";
 import * as CommonComponent from "../common/Component";
 import * as OptionComponent from "../optionstate/OptionComponent";
-import * as OptionStateDisplay from "../optionstate/OptionStateDisplay";
-import * as OptionStateStorage from "../optionstate/OptionStateStorage";
 import { BaseError } from "../common/Err";
 import { ItemList } from "./Item";
 import { ItemCount, SearchDuration, SearchBox } from "./Search";
@@ -23,14 +20,12 @@ import "./Popup.scss";
 
 interface IContentProps {
   storage: StateStorage.IOptionStateStorage;
-  display: OptionStateDisplay.IOptionStateDisplayManager;
   storageListener: Storage.IStorageAreaListener;
-  storageManager: OptionStateStorage.IOptionStateManager;
   searcher: Search.ISearcher;
   remover: Write.IRemover;
-  options: Array<OptionStateDisplay.OptionTag>;
   creator: Write.ICreator;
   scanner: Read.IScanner;
+  newBuilder: () => State.IOptionStateBuilder;
 }
 
 interface IContentState {
@@ -165,9 +160,8 @@ class Content extends React.Component<IContentProps, IContentState> {
   render() {
     const opt = (
       <OptionComponent.OptionTable
-        tags={this.props.options}
-        store={this.props.storageManager}
-        display={this.props.display}
+        store={this.props.storage}
+        newBuilder={this.props.newBuilder}
         additionalClassName="table-sm"
       />
     );
@@ -223,44 +217,25 @@ class Content extends React.Component<IContentProps, IContentState> {
 }
 
 chrome.tabs.query({ active: true, currentWindow: true }, (_) => {
-  const tags = [
-    OptionStateDisplay.OptionTag.queryType,
-    OptionStateDisplay.OptionTag.queryTargetType,
-    OptionStateDisplay.OptionTag.sortType,
-    OptionStateDisplay.OptionTag.sortOrderType,
-    OptionStateDisplay.OptionTag.queryMaxResult,
-    OptionStateDisplay.OptionTag.querySourceMaxResult,
-    OptionStateDisplay.OptionTag.filterAfter,
-    OptionStateDisplay.OptionTag.filterBefore,
-  ];
   const storage = StateStorage.newIOptionStateStorage(
     Storage.newLocalStorageArea(),
     State.newIOptionStateBuilder
   );
-  const display = OptionStateDisplay.newIOptionStateDisplayManager(
-    State.newIOptionStateBuilder
-  );
-  const storageManager = OptionStateStorage.newIOptionStateManager(
-    storage,
-    display
-  );
   const storageListener = Storage.newIStorageAreaListener();
   const api = BNative.newIBookmarksAPI();
   const scanner = Read.newIScanner(api);
-  const searcher = Search.newISearcher(scanner);
   const remover = Write.newIRemover(api);
   const creator = Write.newICreator(api);
+  const searcher = Search.newISearcher(scanner);
   ReactDOM.render(
     <Content
-      options={tags}
       storage={storage}
       searcher={searcher}
       remover={remover}
       creator={creator}
       scanner={scanner}
-      display={display}
       storageListener={storageListener}
-      storageManager={storageManager}
+      newBuilder={State.newIOptionStateBuilder}
     />,
     document.getElementById("popup")
   );

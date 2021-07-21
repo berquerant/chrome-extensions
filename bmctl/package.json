@@ -1,6 +1,6 @@
 {
   "name": "bmctl",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Bookmark controller",
   "author": "berquerant",
   "homepage": "https://github.com/berquerant/chrome-extensions/bmctl",
@@ -20,6 +20,7 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/react-hooks": "^7.0.0",
+    "@types/bootstrap": "^5.0.17",
     "@types/bootstrap-datepicker": "^0.0.14",
     "@types/chrome": "^0.0.145",
     "@types/core-js": "^2.5.4",

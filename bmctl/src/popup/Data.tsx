@@ -86,7 +86,7 @@ export class DataModal extends React.Component<
     // close parent modal
     closeButton.click();
   }
-  render() {
+  render(): JSX.Element {
     // items with checkbox
     const items = this.props.items.map((x) => {
       const checked = this.state.target.has(x.id);

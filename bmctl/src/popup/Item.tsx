@@ -3,7 +3,10 @@ import * as BCommon from "../bookmarks/Common";
 import { Some, None } from "../common/Function";
 
 /** Base component of an item of search result.  */
-function BaseItem(props: { item: BCommon.INode; content: JSX.Element }) {
+function BaseItem(props: {
+  item: BCommon.INode;
+  content: JSX.Element;
+}): JSX.Element {
   // Note: react may warn if bookmarks contain risky one, e.g. js
   const url = props.item.info.url;
   const title = props.item.info.title;
@@ -40,7 +43,7 @@ export function CheckItem(props: {
   item: BCommon.INode;
   onChange: (checked: boolean) => void;
   checked: boolean;
-}) {
+}): JSX.Element {
   const onChange = () => {
     const x = document.getElementById(props.id) as HTMLInputElement;
     props.onChange(x.checked);
@@ -81,7 +84,7 @@ function Item(props: { item: BCommon.INode; onClose?: () => void }) {
 export function ItemList(props: {
   items: BCommon.INodeList;
   genItemOnClose?: (id: BCommon.NodeId) => () => void;
-}) {
+}): JSX.Element {
   const list = () => {
     if (props.items.length == 0) {
       return <div className="item-list-no-item">No results.</div>;

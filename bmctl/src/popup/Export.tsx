@@ -3,7 +3,10 @@ import * as BCommon from "../bookmarks/Common";
 import * as CommonComponent from "../common/Component";
 
 /** Export search result as a json. */
-export function ExportModal(props: { id: string; items: BCommon.INodeList }) {
+export function ExportModal(props: {
+  id: string;
+  items: BCommon.INodeList;
+}): JSX.Element {
   const disabled = props.items.length == 0;
   const json = JSON.stringify(props.items, null, 2);
   const contentId = "data-modal-export-modal-textarea";

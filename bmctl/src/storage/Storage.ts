@@ -29,7 +29,7 @@ export function newIStorageAreaListener(): IStorageAreaListener {
 
 class StorageAreaListener {
   add(callback: (keys: Array<string>) => void): void {
-    chrome.storage.onChanged.addListener((changes, areaName) => {
+    chrome.storage.onChanged.addListener((changes, _) => {
       callback(Object.keys(changes));
     });
   }
