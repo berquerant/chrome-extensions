@@ -157,7 +157,7 @@ class Content extends React.Component<IContentProps, IContentState> {
     this.getFolders();
   }
 
-  render() {
+  render(): JSX.Element {
     const opt = (
       <OptionComponent.OptionTable
         store={this.props.storage}

@@ -66,7 +66,10 @@ export function CheckItem(props: {
 }
 
 /** Search result item. */
-function Item(props: { item: BCommon.INode; onClose?: () => void }) {
+function Item(props: {
+  item: BCommon.INode;
+  onClose?: () => void;
+}): JSX.Element {
   const b = props.onClose
     ? Some(
         <button

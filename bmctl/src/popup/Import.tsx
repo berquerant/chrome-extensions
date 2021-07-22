@@ -45,7 +45,7 @@ function SelectFolders(props: {
   items: BCommon.INodeList;
   value?: BCommon.NodeId;
   onChange?: (v: string) => void;
-}) {
+}): JSX.Element {
   const d = props.items.reduce((acc, x) => {
     acc[x.info.title] = x.id;
     return acc;
@@ -102,12 +102,12 @@ export class ImportModal extends React.Component<
     }
     return Some(this.props.folders[0].id);
   }
-  private handleFolderChange(f: string) {
+  private handleFolderChange(f: string): void {
     this.setState({
       targetFolder: f,
     });
   }
-  private showItemsModal() {
+  private showItemsModal(): JSX.Element {
     const items = this.parse();
     return (
       <DisplayItemsModal
@@ -116,7 +116,7 @@ export class ImportModal extends React.Component<
       />
     );
   }
-  private importItems(items: BCommon.INodeList) {
+  private importItems(items: BCommon.INodeList): void {
     items
       .map((x) => {
         return {
@@ -135,7 +135,7 @@ export class ImportModal extends React.Component<
         }
       });
   }
-  private importItemsModal() {
+  private importItemsModal(): JSX.Element {
     const alertModal = (e: Error) => (
       <CommonComponent.ErrorModal triggerTitle="Import" error={e} />
     );

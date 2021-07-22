@@ -39,21 +39,20 @@ export function DatePicker(props: {
   value?: string;
   orientation?: DatepickerOrientations;
 }): JSX.Element {
+  const id = `#${props.id}`;
+  const jq = $(id).datepicker({
+    clearBtn: true,
+    format: "yyyy-mm-dd",
+    todayHighlight: true,
+    orientation: props.orientation || "auto",
+  });
+  $(id).datepicker("update", props.value || "");
   if (props.onChange) {
     useEffect(() => {
-      const id = `#${props.id}`;
-      $(id)
-        .datepicker({
-          clearBtn: true,
-          format: "yyyy-mm-dd",
-          todayHighlight: true,
-          orientation: props.orientation || "auto",
-        })
-        .on("changeDate", (e) => {
-          const d = e.date;
-          props.onChange(d ? `${Time.dateToTimestring(d)}` : "");
-        });
-      $(id).datepicker("update", props.value || "");
+      jq.on("changeDate", (e) => {
+        const d = e.date;
+        props.onChange(d ? `${Time.dateToTimestring(d)}` : "");
+      });
     });
   }
   return <input id={props.id} className={props.className || ""} />;

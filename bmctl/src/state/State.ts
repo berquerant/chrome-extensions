@@ -280,7 +280,7 @@ class OptionStateBuilder implements IOptionStateBuilder {
       querySourceMaxResult: this.querySourceMaxResultValue,
     };
   }
-  private parse(k: string, v: unknown) {
+  private parse(k: string, v: unknown): void {
     switch (k) {
       case "queryType":
         this.queryType(v);

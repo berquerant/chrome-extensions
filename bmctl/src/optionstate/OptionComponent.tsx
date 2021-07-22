@@ -50,7 +50,7 @@ function OptionMapper(props: {
   toRow: (props: IOptionRowProps) => JSX.Element;
   onChange: (v: string) => void;
   value: string;
-}) {
+}): JSX.Element {
   const tag = props.tag;
   const id = String(tag);
   const selectItems = (items: { [key: string]: unknown }) => (
@@ -170,7 +170,7 @@ class OptionBase extends React.Component<
       this.setState(bs);
     });
   }
-  onSave(): void {
+  handleSave(): void {
     const s = this.state;
     const b = this.props
       .newBuilder()
@@ -202,13 +202,13 @@ class OptionBase extends React.Component<
     b.filters(filters);
     this.props.store.write(b.build());
   }
-  render() {
+  render(): JSX.Element {
     const items = this.renderItems();
     const save = (
       <button
         id={String(OptionTag.saveButton)}
         className="btn btn-success"
-        onClick={() => this.onSave()}
+        onClick={() => this.handleSave()}
       >
         Save
       </button>
