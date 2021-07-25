@@ -12,7 +12,7 @@ function BaseItem(props: {
   const title = props.item.info.title;
   const timestamp = props.item.info.dateAdded;
   const a = (
-    <a href={url} target="_blank" rel="noopener norefereer">
+    <a href={url} target="_blank" rel="noopener noreferrer">
       {title}
     </a>
   );
