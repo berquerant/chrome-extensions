@@ -3,10 +3,75 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import ReactPopover from "react-bootstrap/Popover";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import Fade from "react-bootstrap/Fade";
+import Tooltip from "react-bootstrap/Tooltip";
+import { Placement } from "react-bootstrap/Overlay";
 import { None, Some } from "./Function";
 import "bootstrap-datepicker";
 import $ from "jquery";
 import * as Time from "../common/Time";
+
+/**
+ * Fade out effect wrapper.
+ * The content is shown if clicked, after a while, it is faded out.
+ * @param timeout Duration of the fade animation in milliseconds, default is 300
+ * @param delay Duration until fading in milliseconds, default is 500
+ */
+export function FadeOut(props: {
+  button: JSX.Element;
+  content: JSX.Element;
+  onClick?: () => void;
+  timeout?: number;
+  delay?: number;
+}): JSX.Element {
+  const [open, setOpen] = useState(false);
+  const timeout = props.timeout || 300;
+  const delay = props.delay || 500;
+  const onClick = () => {
+    if (props.onClick) {
+      props.onClick();
+    }
+    setOpen(true);
+    setTimeout(() => setOpen(false), delay);
+  };
+  const button = <div onClick={onClick}>{props.button}</div>;
+  return (
+    <>
+      {button}
+      <Fade in={open} timeout={timeout}>
+        {props.content}
+      </Fade>
+    </>
+  );
+}
+
+/**
+ * Fading out tooltip.
+ */
+export function FadeOutTooltip(props: {
+  id: string;
+  button: JSX.Element;
+  content: string;
+  onClick?: () => void;
+  timeout?: number;
+  delay?: number;
+  placement?: Placement;
+}): JSX.Element {
+  const tip = (
+    <Tooltip id={`${props.id}-tooltip`} placement={props.placement || "right"}>
+      {props.content}
+    </Tooltip>
+  );
+  return (
+    <FadeOut
+      button={props.button}
+      content={tip}
+      onClick={props.onClick}
+      timeout={props.timeout}
+      delay={props.delay}
+    />
+  );
+}
 
 /**
  * Limited popover wrapper.
