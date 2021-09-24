@@ -3,6 +3,7 @@ import * as Search from "./Search";
 import * as State from "../common/State";
 import * as Delete from "../common/Delete";
 import * as Err from "../common/Error";
+import * as Clipboard from "../common/Clipboard";
 import {
   HistorySearcher,
   ISearchResult,
@@ -10,6 +11,7 @@ import {
 } from "../common/Search";
 import { Options } from "./Options";
 import { Popover } from "./Popover";
+import { Tooltip } from "./Fade";
 import { useDebounceEffect } from "./Delay";
 import "./Popup.scss";
 
@@ -108,11 +110,35 @@ function Item(props: { item: ISearchResultItem; onClose?: () => void }) {
     return { exist: false };
   };
   const b = genButton();
+  const clipboardUrlIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      fill="currentColor"
+      className="bi bi-clipboard item-card-url-icon"
+      viewBox="0 0 16 16"
+    >
+      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" />
+      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" />
+    </svg>
+  );
+  const urlTooltip = (
+    <div className="item-card-url-tooltip">
+      <Tooltip
+        id={`${props.item.id}-url`}
+        button={clipboardUrlIcon}
+        content="Copied!"
+        onClick={() => Clipboard.Write(url)}
+      />
+    </div>
+  );
   return (
     <div className="row card item-card">
       <div className="card-body">
         <h6 className="card-title item-card-title">{a}</h6>
         <p className="card-subtitle mb-2 text-mutated item-card-subtitle">
+          {urlTooltip}
           {url}
         </p>
         <div className="card-text item-card-text">

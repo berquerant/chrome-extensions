@@ -25,6 +25,16 @@ body {
   font-size: x-small;
 }
 
+.item-card-url-icon {
+  margin-right: 5px;
+  width: 12px;
+  height: 12px;
+}
+
+.item-card-url-tooltip {
+  float: left;
+}
+
 .item-card-text {
   font-size: xx-small;
   display: flex;

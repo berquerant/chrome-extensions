@@ -4,8 +4,8 @@
   "name": "hgrep",
   "description": "Grep history of visited pages",
   "homepage_url": "https://github.com/berquerant/chrome-extensions/hgrep",
-  "version": "0.3.0",
-  "permissions": ["history", "tabs", "storage"],
+  "version": "0.4.0",
+  "permissions": ["history", "tabs", "storage", "clipboardWrite"],
   "action": {
     "default_title": "hgrep",
     "default_popup": "popup.html"
