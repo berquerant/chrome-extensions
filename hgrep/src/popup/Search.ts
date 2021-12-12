@@ -1,6 +1,7 @@
 import * as State from "../common/State";
 import * as Err from "../common/Error";
 import * as Search from "../common/Search";
+import Fuse from "fuse.js";
 
 export class RegExpSyntaxError extends Err.BaseError {}
 
@@ -22,6 +23,9 @@ type IResultItemComparer = (
 type IResultItemMatcher = (a: Search.ISearchResultItem) => boolean;
 /** A index extractor for string matching. */
 type IResultItemStringPicker = (a: Search.ISearchResultItem) => string;
+type IResultItemsSelector = (
+  items: ReadonlyArray<Search.ISearchResultItem>
+) => ReadonlyArray<Search.ISearchResultItem>;
 
 export class Searcher implements ISearcher {
   constructor(
@@ -32,8 +36,7 @@ export class Searcher implements ISearcher {
   search(word: string, callback: (result: Search.ISearchResult) => void): void {
     const startTime =
       Date.now() - this.config.queryStartTimeBeforeHour * 60 * 60 * 1000; // timestamp(ms)
-    const comparer = this.compareResultItem();
-    const matcher = this.matchResultItem(word);
+    const selector = this.selectResultItems(word);
     this.history.search(
       {
         text: "", // retrieve all pages
@@ -41,15 +44,44 @@ export class Searcher implements ISearcher {
         startTime: startTime, // limit search time range
       },
       (result) => {
-        const items = result.items
-          .filter((x) => x.url && matcher(x)) // url must exist
-          .sort(comparer)
-          .slice(0, this.config.queryMaxResult); // limit number of results
+        const items = selector(result.items).slice(
+          0,
+          this.config.queryMaxResult
+        ); // limit number of results
         callback({
           items: items,
         });
       }
     );
+  }
+
+  private selectResultItems(word: string): IResultItemsSelector {
+    if (this.config.queryType === State.QueryType.Fuzzy) {
+      return this.matchFuzzy(word);
+    }
+    const comparer = this.compareResultItem();
+    const matcher = this.matchResultItem(word);
+    return (items: ReadonlyArray<Search.ISearchResultItem>) =>
+      items
+        .filter((x) => x.url && matcher(x)) // url must exist
+        .sort(comparer);
+  }
+
+  private matchFuzzy(word: string): IResultItemsSelector {
+    const comparer = this.compareResultItem();
+    if (word === "") {
+      return (items: ReadonlyArray<Search.ISearchResultItem>) =>
+        Array.from(items).sort(comparer);
+    }
+    return (items: ReadonlyArray<Search.ISearchResultItem>) =>
+      new Fuse(items, {
+        keys: ["title", "url"],
+        useExtendedSearch: true,
+        shouldSort: false,
+      })
+        .search(word)
+        .map((x) => x.item)
+        .sort(comparer);
   }
 
   private matchResultItem(word: string): IResultItemMatcher {

@@ -2,6 +2,7 @@ export const QueryType = {
   Raw: "raw",
   Regex: "regex",
   Glob: "glob",
+  Fuzzy: "fuzzy",
 } as const;
 export type QueryType = typeof QueryType[keyof typeof QueryType];
 

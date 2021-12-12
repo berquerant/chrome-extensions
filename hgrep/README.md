@@ -39,6 +39,11 @@ Search by regexp.
 
 **Not implemented yet**.
 
+### Fuzzy
+
+Fuzzy searching.
+This option ignores Query Target Type.
+
 ## Query Target Type
 
 Which data to use to search.
