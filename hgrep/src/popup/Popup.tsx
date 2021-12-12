@@ -137,10 +137,10 @@ function Item(props: { item: ISearchResultItem; onClose?: () => void }) {
     <div className="row card item-card">
       <div className="card-body">
         <h6 className="card-title item-card-title">{a}</h6>
-        <p className="card-subtitle mb-2 text-mutated item-card-subtitle">
+        <div className="card-subtitle mb-2 text-mutated item-card-subtitle">
           {urlTooltip}
           {url}
-        </p>
+        </div>
         <div className="card-text item-card-text">
           {options()}
           {b.exist && b.button}
@@ -185,6 +185,11 @@ function ItemCount(props: { count: number }) {
   return <label className="item-count text-muted">{props.count} hits</label>;
 }
 
+function SearchDuration(props: { durationMilliSec: number }): JSX.Element {
+  const v = Math.ceil(props.durationMilliSec);
+  return <label className="search-duration text-mutated">({v} ms)</label>;
+}
+
 interface IContentProps {
   newSearcher: (config: State.IOptionListState) => Search.ISearcher;
   newBuilder: () => State.IOptionListStateBuilder;
@@ -196,6 +201,7 @@ interface IContentProps {
 interface IContentState {
   result: ISearchResult;
   error?: Err.BaseError;
+  searchDuration?: number;
 }
 
 /**
@@ -218,13 +224,29 @@ class Content extends React.Component<IContentProps, IContentState> {
     });
   }
 
+  private newSearchDuration(): { exist: boolean; content?: JSX.Element } {
+    if (this.state.searchDuration != null) {
+      return {
+        exist: true,
+        content: (
+          <SearchDuration durationMilliSec={this.state.searchDuration} />
+        ),
+      };
+    }
+    return {
+      exist: false,
+    };
+  }
+
   /** Run search. */
   handleWordChange() {
+    const startTime = performance.now(); // measure elapsed time
     this.props.storage.read((state) => {
       try {
         this.props.newSearcher(state).search(this.word, (result) => {
           this.setState({
             result: result,
+            searchDuration: performance.now() - startTime,
           });
         });
       } catch (e) {
@@ -287,6 +309,7 @@ class Content extends React.Component<IContentProps, IContentState> {
       />
     );
     const alertMsg = this.newAlert(); // display alert when some error exist
+    const searchDuration = this.newSearchDuration();
     return (
       <div className="container-fluid">
         <header className="popup-header sticky-top">
@@ -298,9 +321,10 @@ class Content extends React.Component<IContentProps, IContentState> {
               <SearchBox onChange={(w) => this.handleSearchBoxChange(w)} />
             </div>
           </div>
-          <div className="row result-info">
+          <div className="row result-info justify-content-between">
             <div className="col">
               <ItemCount count={items.length} />
+              {searchDuration.exist && searchDuration.content}
             </div>
             {alertMsg.exist && alertMsg.content}
           </div>
