@@ -10,6 +10,7 @@ import { Option, None, Some, asOptional } from "../common/Function";
 import * as StateStorage from "../storage/StateStorage";
 import * as Storage from "../storage/Storage";
 import * as State from "../state/State";
+import { newIFuzzySearcher } from "../common/Search";
 import * as CommonComponent from "../common/Component";
 import * as OptionComponent from "../optionstate/OptionComponent";
 import { BaseError } from "../common/Err";
@@ -226,7 +227,10 @@ chrome.tabs.query({ active: true, currentWindow: true }, (_) => {
   const scanner = Read.newIScanner(api);
   const remover = Write.newIRemover(api);
   const creator = Write.newICreator(api);
-  const searcher = Search.newISearcher(scanner);
+  const searcher = Search.newISearcher(
+    scanner,
+    newIFuzzySearcher(["info.title", "info.url"])
+  );
   ReactDOM.render(
     <Content
       storage={storage}

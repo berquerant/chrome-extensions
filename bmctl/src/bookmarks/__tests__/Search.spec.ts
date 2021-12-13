@@ -1,6 +1,7 @@
 import * as Search from "../Search";
 import * as Common from "../Common";
 import * as Read from "../Read";
+import { IFuzzySearcher } from "../../common/Search";
 
 describe("ISearcher", () => {
   class MockScanner implements Read.IScanner {
@@ -10,6 +11,11 @@ describe("ISearcher", () => {
     }
     async scan(): Promise<Common.INodeMap> {
       return this.d;
+    }
+  }
+  class MockFuzzySearcher implements IFuzzySearcher {
+    search<T>(list: Array<T>, _: string): Array<T> {
+      return list;
     }
   }
   const baseTS = 1624151290;
@@ -404,7 +410,10 @@ describe("ISearcher", () => {
   ];
   for (const { name, src, query, want } of tests) {
     it(name, async () => {
-      const s = Search.newISearcher(new MockScanner(src));
+      const s = Search.newISearcher(
+        new MockScanner(src),
+        new MockFuzzySearcher()
+      );
       const g = await s.search(query);
       expect(g.map((x) => x.id)).toEqual(want);
     });

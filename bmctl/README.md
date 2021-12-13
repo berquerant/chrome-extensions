@@ -29,6 +29,11 @@ Search by the search word itself.
 
 Search by regexp.
 
+### Fuzzy
+
+Fuzzy searching.
+This option ignores Query Target Type.
+
 ## Query Target Type
 
 Which data to use to search.

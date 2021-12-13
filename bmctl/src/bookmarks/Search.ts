@@ -2,10 +2,12 @@ import * as Func from "../common/Function";
 import * as Common from "./Common";
 import * as Read from "./Read";
 import * as Err from "./Err";
+import { IFuzzySearcher } from "../common/Search";
 
 export const QueryType = {
   Raw: "raw",
   Regex: "regex",
+  Fuzzy: "fuzzy",
 };
 export type QueryType = typeof QueryType[keyof typeof QueryType];
 
@@ -64,33 +66,62 @@ export interface ISearcher {
   search(query: IQuery): Promise<Common.INodeList>;
 }
 
-export function newISearcher(scanner: Read.IScanner): ISearcher {
-  return new Searcher(scanner);
+export function newISearcher(
+  scanner: Read.IScanner,
+  fuzzySearcher: IFuzzySearcher
+): ISearcher {
+  return new Searcher(scanner, fuzzySearcher);
 }
 
 type StringMatcher = Func.Predicate<string>;
 type INodeStringer = Func.Mapper<Common.INode, string>;
 type INodePredicate = Func.Predicate<Common.INode>;
 type INodeComparer = Func.UndefComparer<Common.INode>;
+type INodeListSelector = Func.Mapper<Common.INodeList, Common.INodeList>;
 
 class Searcher implements ISearcher {
-  constructor(private scanner: Read.IScanner) {}
+  constructor(
+    private scanner: Read.IScanner,
+    private fuzzySearcher: IFuzzySearcher
+  ) {}
 
   async search(query: IQuery): Promise<Common.INodeList> {
-    const matcher = this.matcher(
+    // const matcher = this.matcher(
+    //   query.word,
+    //   query.queryType,
+    //   query.queryTargetType
+    // );
+    const comparer = this.comparer(query.sortType, query.sortOrderType);
+    const filterp = this.filtersToPredicate(query.filters);
+    const selector = this.selector(
       query.word,
       query.queryType,
       query.queryTargetType
     );
-    const comparer = this.comparer(query.sortType, query.sortOrderType);
-    const filterp = this.filtersToPredicate(query.filters);
     return this.scanner.scan().then((r) => {
-      return Array.from(r.values())
+      const src = Array.from(r.values())
         .slice(0, query.querySourceMaxResult)
-        .filter((x) => matcher(x) && filterp(x))
-        .sort(comparer)
-        .slice(0, query.queryMaxResult);
+        .filter((x) => filterp(x));
+      return selector(src).sort(comparer).slice(0, query.queryMaxResult);
+      // return Array.from(r.values())
+      //   .slice(0, query.querySourceMaxResult)
+      //   .filter((x) => matcher(x) && filterp(x))
+      //   .sort(comparer)
+      //   .slice(0, query.queryMaxResult);
     });
+  }
+  private selector(
+    word: string,
+    queryType: QueryType,
+    queryTargetType: QueryTargetType
+  ): INodeListSelector {
+    if (queryType === QueryType.Fuzzy) {
+      return (list: Array<Common.INode>): Array<Common.INode> =>
+        this.fuzzySearcher.search(list, word);
+    }
+    const matcher = this.matcher(word, queryType, queryTargetType);
+    return (list: Array<Common.INode>): Array<Common.INode> =>
+      list.filter((x) => matcher(x));
   }
   private filtersToPredicate(
     filters?: ReadonlyArray<FilterType>

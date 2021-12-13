@@ -51,10 +51,10 @@ function BaseItem(props: {
     <div className="row card item-card">
       <div className="item-body">
         <h6 className="card-title item-card-title">{a}</h6>
-        <p className="card-subtitle mb-2 text-mutated item-card-subtitle">
+        <div className="card-subtitle mb-2 text-mutated item-card-subtitle">
           {urlTooltip}
           {url}
-        </p>
+        </div>
         <div className="card-text item-card-text">
           {opts.join(" ")}
           {props.content}
