@@ -86,11 +86,6 @@ class Searcher implements ISearcher {
   ) {}
 
   async search(query: IQuery): Promise<Common.INodeList> {
-    // const matcher = this.matcher(
-    //   query.word,
-    //   query.queryType,
-    //   query.queryTargetType
-    // );
     const comparer = this.comparer(query.sortType, query.sortOrderType);
     const filterp = this.filtersToPredicate(query.filters);
     const selector = this.selector(
@@ -103,11 +98,6 @@ class Searcher implements ISearcher {
         .slice(0, query.querySourceMaxResult)
         .filter((x) => filterp(x));
       return selector(src).sort(comparer).slice(0, query.queryMaxResult);
-      // return Array.from(r.values())
-      //   .slice(0, query.querySourceMaxResult)
-      //   .filter((x) => matcher(x) && filterp(x))
-      //   .sort(comparer)
-      //   .slice(0, query.queryMaxResult);
     });
   }
   private selector(
@@ -116,11 +106,11 @@ class Searcher implements ISearcher {
     queryTargetType: QueryTargetType
   ): INodeListSelector {
     if (queryType === QueryType.Fuzzy) {
-      return (list: Array<Common.INode>): Array<Common.INode> =>
+      return (list: Common.INodeList): Common.INodeList =>
         this.fuzzySearcher.search(list, word);
     }
     const matcher = this.matcher(word, queryType, queryTargetType);
-    return (list: Array<Common.INode>): Array<Common.INode> =>
+    return (list: Common.INodeList): Common.INodeList =>
       list.filter((x) => matcher(x));
   }
   private filtersToPredicate(
@@ -135,15 +125,15 @@ class Searcher implements ISearcher {
   private filterToPredicate(filter: FilterType): INodePredicate {
     const t = filter.timestamp * 1000; // to millisec
     // treat undefined as a minimal value
-    const pBefore = (a: Common.INode) =>
+    const beforep = (a: Common.INode) =>
       a.info.dateAdded === undefined || a.info.dateAdded < t;
     switch (filter.kind) {
       case "before":
-        return pBefore;
+        return beforep;
       case "after":
         // after is exclusive
         // but ok, target is timestamp
-        return (a: Common.INode) => !pBefore(a);
+        return (a: Common.INode) => !beforep(a);
       default:
         throw new Err.UnreachableError(`unknown filter ${filter}`);
     }
