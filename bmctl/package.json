@@ -1,6 +1,6 @@
 {
   "name": "bmctl",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Bookmark controller",
   "author": "berquerant",
   "homepage": "https://github.com/berquerant/chrome-extensions/bmctl",
