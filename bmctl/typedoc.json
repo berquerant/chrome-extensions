@@ -1,4 +1,4 @@
 {
   "out": "./docs",
-  "entryPoints": ["./src/"]
+  "entryPoints": ["./src/popup/index.tsx"]
 }
