@@ -1,4 +1,4 @@
-import * as Search from "../Search";
+import * as Search from "@/common/Search";
 
 describe("FuzzySearcher", () => {
   type Doc = {

@@ -1,6 +1,6 @@
-import * as State from "../State";
-import * as Search from "../../bookmarks/Search";
-import { None, Some, Ok } from "../../common/Function";
+import * as State from "@/state/State";
+import * as Search from "@/bookmarks/Search";
+import { None, Some, Ok } from "@/common/Function";
 
 describe("toNumberoptional", () => {
   const tests = [

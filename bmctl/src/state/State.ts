@@ -4,7 +4,7 @@ import {
   SortOrderType,
   SortType,
   FilterType,
-} from "../bookmarks/Search";
+} from "@/bookmarks/Search";
 import {
   Result,
   Ok,
@@ -13,9 +13,9 @@ import {
   Option,
   None,
   Some,
-} from "../common/Function";
-import { BaseError } from "../common/Err";
-import * as Log from "../log/Log";
+} from "@/common/Function";
+import { BaseError } from "@/common/Err";
+import * as Log from "@/log/Log";
 
 export const OptionStateKey = {
   QueryType: "queryType",

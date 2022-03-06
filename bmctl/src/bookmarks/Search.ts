@@ -1,8 +1,8 @@
-import * as Func from "../common/Function";
-import * as Common from "./Common";
-import * as Read from "./Read";
-import * as Err from "./Err";
-import { IFuzzySearcher } from "../common/Search";
+import * as Func from "@/common/Function";
+import * as Common from "@/bookmarks/Common";
+import * as Read from "@/bookmarks/Read";
+import * as Err from "@/bookmarks/Err";
+import { IFuzzySearcher } from "@/common/Search";
 
 export const QueryType = {
   Raw: "raw",

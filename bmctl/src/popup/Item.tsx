@@ -1,8 +1,8 @@
 import React from "react";
-import * as BCommon from "../bookmarks/Common";
-import { Some, None } from "../common/Function";
-import { FadeOutTooltip } from "../common/Component";
-import * as Clipboard from "../common/Clipboard";
+import * as BCommon from "@/bookmarks/Common";
+import { Some, None } from "@/common/Function";
+import { FadeOutTooltip } from "@/common/Component";
+import * as Clipboard from "@/common/Clipboard";
 
 /** Base component of an item of search result.  */
 function BaseItem(props: {

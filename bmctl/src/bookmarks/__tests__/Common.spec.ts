@@ -1,5 +1,5 @@
-import * as Common from "../Common";
-import { None, Ok } from "../../common/Function";
+import * as Common from "@/bookmarks/Common";
+import { None, Ok } from "@/common/Function";
 
 describe("INodeMap", () => {
   it("satisfy scenario", () => {

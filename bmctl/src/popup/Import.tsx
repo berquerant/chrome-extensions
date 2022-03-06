@@ -1,7 +1,7 @@
 import React from "react";
-import * as BCommon from "../bookmarks/Common";
-import * as Write from "../bookmarks/Write";
-import * as CommonComponent from "../common/Component";
+import * as BCommon from "@/bookmarks/Common";
+import * as Write from "@/bookmarks/Write";
+import * as CommonComponent from "@/common/Component";
 import {
   Option,
   Some,
@@ -11,9 +11,9 @@ import {
   Err,
   Try,
   asOptional,
-} from "../common/Function";
-import * as Item from "./Item";
-import { BaseError } from "../common/Err";
+} from "@/common/Function";
+import * as Item from "@/popup/Item";
+import { BaseError } from "@/common/Err";
 
 /** Modal to display bookmarks. */
 function DisplayItemsModal(props: {

@@ -1,5 +1,5 @@
-import * as State from "../state/State";
-import * as Storage from "./Storage";
+import * as State from "@/state/State";
+import * as Storage from "@/storage/Storage";
 
 /** [[IOptionState]] manipulator. */
 export interface IOptionStateStorage {

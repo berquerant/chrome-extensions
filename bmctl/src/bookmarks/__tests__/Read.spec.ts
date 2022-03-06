@@ -1,5 +1,5 @@
-import * as Native from "../Native";
-import * as Read from "../Read";
+import * as Native from "@/bookmarks/Native";
+import * as Read from "@/bookmarks/Read";
 
 describe("IScanner", () => {
   class MockBookmarksAPI implements Native.IBookmarksAPI {

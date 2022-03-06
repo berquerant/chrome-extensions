@@ -1,5 +1,5 @@
 import React from "react";
-import * as Delay from "../common/Delay";
+import * as Delay from "@/common/Delay";
 
 /** Search box for query visited pages history. */
 export function SearchBox(props: {

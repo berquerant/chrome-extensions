@@ -1,5 +1,5 @@
-import * as Common from "./Common";
-import * as Native from "./Native";
+import * as Common from "@/bookmarks/Common";
+import * as Native from "@/bookmarks/Native";
 
 /** A bookmark remover. */
 export interface IRemover {

@@ -1,6 +1,6 @@
-import * as Common from "./Common";
-import * as Native from "./Native";
-import { Some, None } from "../common/Function";
+import * as Common from "@/bookmarks/Common";
+import * as Native from "@/bookmarks/Native";
+import { Some, None } from "@/common/Function";
 
 /** A bookmark getter. */
 export interface IGetter {

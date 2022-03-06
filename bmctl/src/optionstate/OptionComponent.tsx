@@ -1,10 +1,10 @@
 import React from "react";
-import { SelectItems, DatePicker } from "../common/Component";
-import * as StateStorage from "../storage/StateStorage";
-import * as Search from "../bookmarks/Search";
-import * as State from "../state/State";
-import * as Time from "../common/Time";
-import * as Err from "../common/Err";
+import { SelectItems, DatePicker } from "@/common/Component";
+import * as StateStorage from "@/storage/StateStorage";
+import * as Search from "@/bookmarks/Search";
+import * as State from "@/state/State";
+import * as Time from "@/common/Time";
+import * as Err from "@/common/Err";
 
 /** A kind of settings. */
 const OptionTag = {

@@ -1,5 +1,5 @@
-import { Result, Ok, Err } from "./Function";
-import { BaseError } from "./Err";
+import { Result, Ok, Err } from "@/common/Function";
+import { BaseError } from "@/common/Err";
 
 export class InvalidTimestringError extends BaseError {}
 

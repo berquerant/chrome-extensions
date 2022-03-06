@@ -6,10 +6,10 @@ import Button from "react-bootstrap/Button";
 import Fade from "react-bootstrap/Fade";
 import Tooltip from "react-bootstrap/Tooltip";
 import { Placement } from "react-bootstrap/Overlay";
-import { None, Some } from "./Function";
+import { None, Some } from "@/common/Function";
 import "bootstrap-datepicker";
 import $ from "jquery";
-import * as Time from "../common/Time";
+import * as Time from "@/common/Time";
 
 /**
  * Fade out effect wrapper.

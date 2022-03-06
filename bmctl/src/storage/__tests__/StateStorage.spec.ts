@@ -1,8 +1,8 @@
-import * as StateStorage from "../StateStorage";
-import * as Storage from "../Storage";
-import * as State from "../../state/State";
-import * as Search from "../../bookmarks/Search";
-import * as Func from "../../common/Function";
+import * as StateStorage from "@/storage/StateStorage";
+import * as Storage from "@/storage/Storage";
+import * as State from "@/state/State";
+import * as Search from "@/bookmarks/Search";
+import * as Func from "@/common/Function";
 
 describe("IOptionStateStorage", () => {
   // not unit test

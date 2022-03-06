@@ -1,5 +1,5 @@
-import * as Time from "../Time";
-import { Ok, Err } from "../Function";
+import * as Time from "@/common/Time";
+import { Ok, Err } from "@/common/Function";
 
 describe("timestringToDate", () => {
   const tests = [

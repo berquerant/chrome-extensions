@@ -1,7 +1,7 @@
-import * as Search from "../Search";
-import * as Common from "../Common";
-import * as Read from "../Read";
-import { IFuzzySearcher } from "../../common/Search";
+import * as Search from "@/bookmarks/Search";
+import * as Common from "@/bookmarks/Common";
+import * as Read from "@/bookmarks/Read";
+import { IFuzzySearcher } from "@/common/Search";
 
 describe("ISearcher", () => {
   class MockScanner implements Read.IScanner {

@@ -1,4 +1,4 @@
-import { BaseError } from "./Err";
+import { BaseError } from "@/common/Err";
 
 export class InvalidNumberError extends BaseError {}
 

@@ -1,6 +1,6 @@
 import React from "react";
-import * as BCommon from "../bookmarks/Common";
-import * as CommonComponent from "../common/Component";
+import * as BCommon from "@/bookmarks/Common";
+import * as CommonComponent from "@/common/Component";
 
 /** Export search result as a json. */
 export function ExportModal(props: {

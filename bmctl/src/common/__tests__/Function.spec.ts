@@ -1,4 +1,4 @@
-import * as Func from "../Function";
+import * as Func from "@/common/Function";
 
 describe("toNumber", () => {
   it("accept number", () => {

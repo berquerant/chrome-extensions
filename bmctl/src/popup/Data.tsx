@@ -1,11 +1,11 @@
 import React from "react";
-import * as CommonComponent from "../common/Component";
-import * as BCommon from "../bookmarks/Common";
-import * as Write from "../bookmarks/Write";
-import { ISet, newISet } from "../collections/Set";
-import { CheckItem } from "./Item";
-import { ExportModal } from "./Export";
-import { ImportModal } from "./Import";
+import * as CommonComponent from "@/common/Component";
+import * as BCommon from "@/bookmarks/Common";
+import * as Write from "@/bookmarks/Write";
+import { ISet, newISet } from "@/collections/Set";
+import { CheckItem } from "@/popup/Item";
+import { ExportModal } from "@/popup/Export";
+import { ImportModal } from "@/popup/Import";
 
 export interface IDataModalProps {
   id: string;

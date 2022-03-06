@@ -1,11 +1,11 @@
 import "bootstrap";
-import "./Options.scss";
+import "@/options/Options.scss";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { OptionPage } from "../optionstate/OptionComponent";
-import { newIOptionStateStorage } from "../storage/StateStorage";
-import { newLocalStorageArea } from "../storage/Storage";
-import { newIOptionStateBuilder } from "../state/State";
+import { OptionPage } from "@/optionstate/OptionComponent";
+import { newIOptionStateStorage } from "@/storage/StateStorage";
+import { newLocalStorageArea } from "@/storage/Storage";
+import { newIOptionStateBuilder } from "@/state/State";
 
 chrome.tabs.query({ active: true, currentWindow: true }, (_) => {
   const store = newIOptionStateStorage(

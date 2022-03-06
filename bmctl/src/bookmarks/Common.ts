@@ -1,4 +1,4 @@
-import { Option, Some, None } from "../common/Function";
+import { Option, Some, None } from "@/common/Function";
 
 /** The ID of [[INode]]. */
 export type NodeId = string;
