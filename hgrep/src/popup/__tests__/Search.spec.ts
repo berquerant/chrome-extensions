@@ -1,7 +1,7 @@
-import * as Search from "../Search";
-import * as API from "../../common/Search";
-import * as State from "../../common/State";
-import * as Err from "../../common/Error";
+import * as Search from "@/popup/Search";
+import * as API from "@/common/Search";
+import * as State from "@/common/State";
+import * as Err from "@/common/Error";
 
 describe("Searcher", () => {
   class MockHistorySearcher implements API.IHistorySearcher {

@@ -1,19 +1,19 @@
 import React, { useEffect } from "react";
-import * as Search from "./Search";
-import * as State from "../common/State";
-import * as Delete from "../common/Delete";
-import * as Err from "../common/Error";
-import * as Clipboard from "../common/Clipboard";
+import * as Search from "@/popup/Search";
+import * as State from "@/common/State";
+import * as Delete from "@/common/Delete";
+import * as Err from "@/common/Error";
+import * as Clipboard from "@/common/Clipboard";
 import {
   HistorySearcher,
   ISearchResult,
   ISearchResultItem,
-} from "../common/Search";
-import { Options } from "./Options";
-import { Popover } from "./Popover";
-import { Tooltip } from "./Fade";
-import { useDebounceEffect } from "./Delay";
-import "./Popup.scss";
+} from "@/common/Search";
+import { Options } from "@/popup/Options";
+import { Popover } from "@/popup/Popover";
+import { Tooltip } from "@/popup/Fade";
+import { useDebounceEffect } from "@/popup/Delay";
+import "@/popup/Popup.scss";
 
 /** Minimal bootstrap danger alert. */
 function Alert(props: {

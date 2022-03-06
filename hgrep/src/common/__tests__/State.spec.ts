@@ -1,4 +1,4 @@
-import * as State from "../State";
+import * as State from "@/common/State";
 
 describe("OptionListStateBuilder", () => {
   const newBuilder = () => new State.OptionListStateBuilder();

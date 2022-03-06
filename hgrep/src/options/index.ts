@@ -1,5 +1,5 @@
-import * as State from "../common/State";
-import "./Options.scss";
+import * as State from "@/common/State";
+import "@/options/Options.scss";
 
 const tags = {
   sortType: "sort-type",

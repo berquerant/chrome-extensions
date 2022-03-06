@@ -1,6 +1,6 @@
-import * as State from "../common/State";
-import * as Err from "../common/Error";
-import * as Search from "../common/Search";
+import * as State from "@/common/State";
+import * as Err from "@/common/Error";
+import * as Search from "@/common/Search";
 import Fuse from "fuse.js";
 
 export class RegExpSyntaxError extends Err.BaseError {}

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import * as State from "../common/State";
+import * as State from "@/common/State";
 
 /**
  * Creates selections from a dictionary.
