@@ -14,7 +14,7 @@
     "dev:lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "dev": "npm-run-all -l --silent --max-parallel 4 -p dev:*",
     "clean": "rimraf node_modules build coverage docs dist/options.js dist/popup.js stats.json",
-    "profile": "webpack --config webpack.prod.js --profile --json > stats.json && webpack-bundle-analyzer stats.json"
+    "profile": "webpack --config webpack.prod.js --profile --json > stats.json && webpack-bundle-analyzer stats.json dist"
   },
   "devDependencies": {
     "@popperjs/core": "^2.9.2",
