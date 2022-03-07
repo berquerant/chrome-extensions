@@ -10,3 +10,6 @@ test: # run tests
 
 clean: # clean generated resources
 	@npm run clean
+
+profile: # view bundle profile
+	@npm run profile

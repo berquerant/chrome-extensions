@@ -5,3 +5,4 @@ coverage/
 tmp/
 dist/popup.js
 dist/options.js
+stats.json
