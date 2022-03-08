@@ -4,7 +4,7 @@
   "name": "bmctl",
   "description": "Bookmark control",
   "homepage_url": "https://github.com/berquerant/chrome-extensions/bmctl",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "permissions": ["bookmarks", "tabs", "storage", "clipboardWrite"],
   "action": {
     "default_title": "bmctl",

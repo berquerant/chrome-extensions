@@ -6,3 +6,5 @@ tmp/
 dist/popup.js
 dist/options.js
 stats.json
+dist/popup.css
+dist/options.css
