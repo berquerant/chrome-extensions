@@ -3,4 +3,5 @@ build
 coverage
 docs
 dist/*.js
+dist/*.css
 tmp
