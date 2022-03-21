@@ -9,6 +9,8 @@ export interface INodeInfo {
   readonly url?: string;
   readonly title: string;
   readonly dateAdded?: number;
+  /** Folder tree. */
+  readonly path?: Array<string>;
 }
 
 export function isINodeInfo(x: any): x is INodeInfo {
@@ -17,7 +19,8 @@ export function isINodeInfo(x: any): x is INodeInfo {
     x.title &&
     typeof x.title == "string" &&
     (!x.url || typeof x.url == "string") &&
-    (!x.dateAdded || typeof x.dateAdded == "number")
+    (!x.dateAdded || typeof x.dateAdded == "number") &&
+    (!x.path || typeof x.path == "string")
   );
 }
 
@@ -65,7 +68,7 @@ export interface INodeMap {
   set(node: INode): void;
   delete(id: NodeId): void;
   size(): number;
-  values(): Iterator<INode> & Iterable<INode>;
+  values(): IterableIterator<INode>;
 }
 
 export function newINodeMap(): INodeMap {
@@ -77,9 +80,38 @@ class NodeMap implements INodeMap {
   constructor() {
     this.d = new Map();
   }
+  private isRoot(a: INode): boolean {
+    return a.id == "0" || a.parentId === undefined;
+  }
+  private isFolder(a: INode): boolean {
+    return a.info.url === undefined;
+  }
+  private getPath(a: INode): Array<string> {
+    if (this.isRoot(a)) return [];
+    const n = this.d.get(a.parentId);
+    if (n === undefined) return [a.info.title];
+    const r = this.getPath(n); // visit parent
+    r.push(a.info.title);
+    return r;
+  }
+  private addPath(n: INode): INode {
+    const ni = n.info;
+    const info = {
+      title: ni.title,
+      path: this.getPath(n),
+    };
+    if (ni.url !== undefined) info["url"] = ni.url;
+    if (ni.dateAdded !== undefined) info["dateAdded"] = ni.dateAdded;
+    const node = {
+      id: n.id,
+      info: info,
+    };
+    if (n.parentId !== undefined) node["parentId"] = n.parentId;
+    return node;
+  }
   get(id: NodeId): Option<INode> {
     const v = this.d.get(id);
-    return v !== undefined ? Some(v) : None;
+    return v !== undefined ? Some(this.addPath(v)) : None;
   }
   set(node: INode): void {
     this.d.set(node.id, node);
@@ -90,7 +122,9 @@ class NodeMap implements INodeMap {
   size(): number {
     return this.d.size;
   }
-  values(): Iterator<INode> & Iterable<INode> {
-    return this.d.values();
+  *values(): IterableIterator<INode> {
+    for (const n of this.d.values()) {
+      yield this.addPath(n);
+    }
   }
 }
