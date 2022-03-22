@@ -83,9 +83,6 @@ class NodeMap implements INodeMap {
   private isRoot(a: INode): boolean {
     return a.id == "0" || a.parentId === undefined;
   }
-  private isFolder(a: INode): boolean {
-    return a.info.url === undefined;
-  }
   private getPath(a: INode): Array<string> {
     if (this.isRoot(a)) return [];
     const n = this.d.get(a.parentId);
@@ -97,11 +94,9 @@ class NodeMap implements INodeMap {
   private addPath(n: INode): INode {
     const ni = n.info;
     const info = {
-      title: ni.title,
+      ...ni,
       path: this.getPath(n),
     };
-    if (ni.url !== undefined) info["url"] = ni.url;
-    if (ni.dateAdded !== undefined) info["dateAdded"] = ni.dateAdded;
     const node = {
       id: n.id,
       info: info,
