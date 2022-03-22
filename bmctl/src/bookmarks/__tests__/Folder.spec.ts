@@ -38,7 +38,7 @@ describe("ISearcher", () => {
           id: "0",
           info: {
             title: "",
-            path: [],
+            path: Common.newIPath([]),
           },
         },
       ],
@@ -56,7 +56,7 @@ describe("ISearcher", () => {
           id: "0",
           info: {
             title: "",
-            path: [],
+            path: Common.newIPath([]),
           },
         },
         {
@@ -64,7 +64,7 @@ describe("ISearcher", () => {
           parentId: "0",
           info: {
             title: "f1",
-            path: ["f1"],
+            path: Common.newIPath(["f1"]),
           },
         },
       ],
@@ -86,7 +86,7 @@ describe("ISearcher", () => {
           id: "0",
           info: {
             title: "",
-            path: [],
+            path: Common.newIPath([]),
           },
         },
         {
@@ -94,7 +94,7 @@ describe("ISearcher", () => {
           parentId: "0",
           info: {
             title: "f1",
-            path: ["f1"],
+            path: Common.newIPath(["f1"]),
           },
         },
         {
@@ -102,7 +102,7 @@ describe("ISearcher", () => {
           parentId: "1",
           info: {
             title: "f2",
-            path: ["f1", "f2"],
+            path: Common.newIPath(["f1", "f2"]),
           },
         },
       ],
@@ -128,7 +128,7 @@ describe("ISearcher", () => {
           id: "0",
           info: {
             title: "",
-            path: [],
+            path: Common.newIPath([]),
           },
         },
         {
@@ -136,7 +136,7 @@ describe("ISearcher", () => {
           parentId: "0",
           info: {
             title: "f1",
-            path: ["f1"],
+            path: Common.newIPath(["f1"]),
           },
         },
         {
@@ -144,7 +144,7 @@ describe("ISearcher", () => {
           parentId: "0",
           info: {
             title: "f2",
-            path: ["f2"],
+            path: Common.newIPath(["f2"]),
           },
         },
         {
@@ -152,7 +152,7 @@ describe("ISearcher", () => {
           parentId: "1",
           info: {
             title: "e1",
-            path: ["f1", "e1"],
+            path: Common.newIPath(["f1", "e1"]),
             url: "e1-url",
           },
         },
@@ -185,7 +185,7 @@ describe("ISearcher", () => {
       expect(
         got.map((x) => ({
           id: x.id,
-          absPath: x.absPath,
+          absPath: x.info.path.str,
         }))
       ).toEqual(want);
     });

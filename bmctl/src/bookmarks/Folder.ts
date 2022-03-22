@@ -8,24 +8,9 @@ export interface IQuery {
   readonly word: string;
 }
 
-export interface INode extends Common.INode {
-  absPath: string;
-}
-
-export function newINode(node: Common.INode): INode {
-  const path = node.info.path;
-  const strPath = path === undefined ? "" : path.join("/");
-  return {
-    ...node,
-    absPath: "/" + strPath,
-  };
-}
-
-export type INodeList = Array<INode>;
-
 /** Provides an interface for searching bookmark folders. */
 export interface ISearcher {
-  search(query: IQuery): Promise<INodeList>;
+  search(query: IQuery): Promise<Common.INodeList>;
 }
 
 export function newISearcher(
@@ -35,7 +20,7 @@ export function newISearcher(
   return new Searcher(scanner, fuzzySearcherFactory);
 }
 
-type IFolderListSelector = Func.Mapper<INodeList, INodeList>;
+type IFolderListSelector = Func.Mapper<Common.INodeList, Common.INodeList>;
 
 class Searcher implements ISearcher {
   constructor(
@@ -43,12 +28,11 @@ class Searcher implements ISearcher {
     private fuzzySearcherFactory: (keys: Array<string>) => IFuzzySearcher
   ) {}
 
-  async search(query: IQuery): Promise<INodeList> {
+  async search(query: IQuery): Promise<Common.INodeList> {
     const selector = this.selector(query.word);
-    return this.scanner.scan().then((r) => {
-      const src = Array.from(this.folders(r)).map(newINode);
-      return selector(src).sort(this.compare);
-    });
+    return this.scanner
+      .scan()
+      .then((r) => selector(Array.from(this.folders(r))).sort(this.compare));
   }
 
   private *folders(nodeMap: Common.INodeMap): IterableIterator<Common.INode> {
@@ -58,12 +42,12 @@ class Searcher implements ISearcher {
   }
 
   private selector(word: string): IFolderListSelector {
-    const fs = this.fuzzySearcherFactory(["absPath"]);
-    return (list: INodeList): INodeList => fs.search(list, word);
+    const fs = this.fuzzySearcherFactory(["info.path.str"]);
+    return (list: Common.INodeList): Common.INodeList => fs.search(list, word);
   }
 
-  private compare(a: INode, b: INode): number {
-    return Func.stringComparer(a.absPath, b.absPath);
+  private compare(a: Common.INode, b: Common.INode): number {
+    return Func.stringComparer(a.info.path.str, b.info.path.str);
   }
 
   private isFolder(n: Common.INode): boolean {

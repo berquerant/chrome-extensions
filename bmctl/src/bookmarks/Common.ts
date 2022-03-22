@@ -3,6 +3,30 @@ import { Option, Some, None } from "@/common/Function";
 /** The ID of [[INode]]. */
 export type NodeId = string;
 
+export interface IPath {
+  readonly str: string;
+  readonly list: Array<string>;
+}
+
+export function newIPath(list: Array<string>): IPath {
+  const p = list.join("/");
+  return {
+    list: list,
+    str: "/" + p,
+  };
+}
+
+export function isIPath(x: any): x is IPath {
+  return (
+    x &&
+    x.str &&
+    typeof x.str == "string" &&
+    x.list &&
+    Array.isArray(x.list) &&
+    x.list.every((e) => typeof e == "string")
+  );
+}
+
 /** Info of a bookmark except [[NodeId]]. */
 export interface INodeInfo {
   /** This Node is a folder if undefined. */
@@ -10,7 +34,7 @@ export interface INodeInfo {
   readonly title: string;
   readonly dateAdded?: number;
   /** Folder tree. */
-  readonly path?: Array<string>;
+  readonly path?: IPath;
 }
 
 export function isINodeInfo(x: any): x is INodeInfo {
@@ -20,7 +44,7 @@ export function isINodeInfo(x: any): x is INodeInfo {
     typeof x.title == "string" &&
     (!x.url || typeof x.url == "string") &&
     (!x.dateAdded || typeof x.dateAdded == "number") &&
-    (!x.path || typeof x.path == "string")
+    (!x.path || isIPath(x.path))
   );
 }
 
@@ -95,7 +119,7 @@ class NodeMap implements INodeMap {
     const ni = n.info;
     const info = {
       ...ni,
-      path: this.getPath(n),
+      path: newIPath(this.getPath(n)),
     };
     const node = {
       id: n.id,

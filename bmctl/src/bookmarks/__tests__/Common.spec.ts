@@ -9,7 +9,6 @@ describe("INodeMap", () => {
       id: "1",
       info: {
         title: "one",
-        path: [],
       },
     });
     expect(d.size()).toBe(1);
@@ -19,7 +18,7 @@ describe("INodeMap", () => {
         id: "1",
         info: {
           title: "one",
-          path: [],
+          path: Common.newIPath([]),
         },
       })
     );
@@ -79,27 +78,27 @@ describe("INodeMap", () => {
     const want = [
       {
         id: "0",
-        path: [],
+        path: "/",
       },
       {
         id: "1",
-        path: ["f1"],
+        path: "/f1",
       },
       {
         id: "2",
-        path: ["e1"],
+        path: "/e1",
       },
       {
         id: "3",
-        path: ["f1", "e2"],
+        path: "/f1/e2",
       },
       {
         id: "4",
-        path: ["f1", "f2"],
+        path: "/f1/f2",
       },
       {
         id: "5",
-        path: ["f1", "f2", "e3"],
+        path: "/f1/f2/e3",
       },
     ];
     const d = Common.newINodeMap();
@@ -113,7 +112,7 @@ describe("INodeMap", () => {
       const w = want[i];
       expect(g.id).toBe(w.id);
       expect(g.info.path).toBeTruthy();
-      expect(g.info.path.join("/")).toBe(w.path.join("/"));
+      expect(g.info.path.str).toBe(w.path);
     }
   });
 });
