@@ -248,6 +248,47 @@ describe("ISearcher", () => {
       want: ["0", "1", "2", "3"],
     },
     {
+      name: "folder filter",
+      src: [
+        {
+          id: "0", // root
+          info: {
+            title: "",
+          },
+        },
+        {
+          id: "1", // /f1
+          parentId: "0",
+          info: {
+            title: "f1",
+          },
+        },
+        {
+          id: "4", // /f1/w
+          parentId: "1",
+          info: {
+            title: w,
+          },
+        },
+        {
+          id: "2", // /f2
+          parentId: "0",
+          info: {
+            title: "f2",
+          },
+        },
+        {
+          id: "3", // /f2/w
+          parentId: "2",
+          info: {
+            title: w,
+          },
+        },
+      ],
+      query: { ...q, filters: [{ kind: "folder", path: "f1" }] },
+      want: ["4"],
+    },
+    {
       name: "before filter",
       src: [
         {

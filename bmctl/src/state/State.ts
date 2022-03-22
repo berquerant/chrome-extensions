@@ -89,19 +89,30 @@ export class InvalidFilterTypeError extends BaseError {}
 
 export function toFilterType(v: unknown): Result<FilterType> {
   try {
-    if (v["kind"] == "before" || v["kind"] == "after") {
-      if (typeof v["timestamp"] === "number") {
-        return Ok(v as FilterType);
-      }
-      if (typeof v["timestamp"] === "string") {
-        const ts = parseInt(v["timestamp"]);
-        if (!isNaN(ts)) {
-          return Ok({
-            kind: v["kind"],
-            timestamp: ts,
-          });
+    switch (v["kind"]) {
+      case "before":
+      case "after":
+        switch (typeof v["timestamp"]) {
+          case "number":
+            return Ok(v as FilterType);
+          case "string":
+            {
+              const ts = parseInt(v["timestamp"]);
+              if (!isNaN(ts)) {
+                return Ok({
+                  kind: v["kind"],
+                  timestamp: ts,
+                });
+              }
+            }
+            break;
         }
-      }
+        break;
+      case "folder":
+        if (typeof v["path"] == "string") {
+          return Ok(v as FilterType);
+        }
+        break;
     }
     return Err(new InvalidFilterTypeError(String(v)));
   } catch (e) {

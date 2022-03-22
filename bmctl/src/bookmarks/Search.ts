@@ -39,6 +39,10 @@ export type FilterType =
   | {
       kind: "after";
       timestamp: number;
+    }
+  | {
+      kind: "folder";
+      path: string;
     };
 
 /** Search configurations. */
@@ -123,17 +127,20 @@ class Searcher implements ISearcher {
     return (a: Common.INode) => fs.every((f) => f(a));
   }
   private filterToPredicate(filter: FilterType): INodePredicate {
-    const t = filter.timestamp * 1000; // to millisec
     // treat undefined as a minimal value
-    const beforep = (a: Common.INode) =>
-      a.info.dateAdded === undefined || a.info.dateAdded < t;
+    const beforep =
+      (ts: number): INodePredicate =>
+      (a: Common.INode) =>
+        a.info.dateAdded === undefined || a.info.dateAdded < ts * 1000; // to millisec
     switch (filter.kind) {
       case "before":
-        return beforep;
+        return beforep(filter.timestamp);
       case "after":
         // after is exclusive
         // but ok, target is timestamp
-        return (a: Common.INode) => !beforep(a);
+        return (a: Common.INode) => !beforep(filter.timestamp)(a);
+      case "folder":
+        return (a: Common.INode) => a.info.path.str.includes(filter.path);
       default:
         throw new Err.UnreachableError(`unknown filter ${filter}`);
     }

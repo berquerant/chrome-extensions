@@ -166,6 +166,17 @@ describe("toFilterType", () => {
         timestamp: 10,
       }),
     },
+    {
+      name: "accept folder",
+      value: {
+        kind: "folder",
+        path: "/",
+      },
+      want: Ok({
+        kind: "folder",
+        path: "/",
+      }),
+    },
   ];
   for (const { name, value, want } of tests) {
     it(name, () => {

@@ -160,12 +160,16 @@ class OptionBase extends React.Component<
       s.filters
         .filter((x) => x.kind == "after")
         .forEach((x) => {
-          bs.filterAfter = Time.dateToTimestring(new Date(x.timestamp * 1000));
+          bs.filterAfter = Time.dateToTimestring(
+            new Date(x["timestamp"] * 1000)
+          );
         });
       s.filters
         .filter((x) => x.kind == "before")
         .forEach((x) => {
-          bs.filterBefore = Time.dateToTimestring(new Date(x.timestamp * 1000));
+          bs.filterBefore = Time.dateToTimestring(
+            new Date(x["timestamp"] * 1000)
+          );
         });
       this.setState(bs);
     });
