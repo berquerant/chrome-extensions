@@ -314,11 +314,11 @@ class Content extends React.Component<IContentProps, IContentState> {
       <div className="container-fluid">
         <header className="popup-header sticky-top">
           <div className="row">
-            <div className="col-3 popover-wrapper">
-              <Popover id="popover-hgrep-options" content={opt} />
-            </div>
             <div className="col-9 search">
               <SearchBox onChange={(w) => this.handleSearchBoxChange(w)} />
+            </div>
+            <div className="col-3 popover-wrapper">
+              <Popover id="popover-hgrep-options" content={opt} />
             </div>
           </div>
           <div className="row result-info justify-content-between">

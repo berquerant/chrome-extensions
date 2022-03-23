@@ -1,6 +1,6 @@
 {
   "name": "hgrep",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "author": "berquerant",
   "description": "Grep history of visited pages",
   "homepage": "https://github.com/berquerant/chrome-extensions/hgrep",
