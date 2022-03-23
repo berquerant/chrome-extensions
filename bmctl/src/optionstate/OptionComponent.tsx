@@ -59,8 +59,7 @@ function OptionMapper(props: {
   const id = String(tag);
   const selectItems = (
     items: { [key: string]: unknown },
-    shouldBeTop?: boolean,
-    isClearable?: boolean
+    shouldBeTop?: boolean
   ) => (
     <SelectItems
       id={id}
@@ -69,7 +68,6 @@ function OptionMapper(props: {
       onChange={props.onChange}
       value={props.value}
       menuPlacement={shouldBeTop ? "top" : "auto"}
-      isClearable={isClearable}
     />
   );
   const inputItem = () => (
@@ -115,10 +113,7 @@ function OptionMapper(props: {
     case OptionTag.filterBefore:
       return toRow("Filter Before", dateItem());
     case OptionTag.filterFolder:
-      return toRow(
-        "Filter Folder",
-        selectItems(props.selectOptions, true, true)
-      ); // FIXME: dirty, should be css
+      return toRow("Filter Folder", selectItems(props.selectOptions, true)); // FIXME: dirty, should be css
   }
   throw new Err.UnknownError(`OptionTag: ${tag}`);
 }

@@ -94,7 +94,8 @@ Include specified date.
 
 ## Filter Folder
 
-String that should be within the path (folder tree) of search target.
+String that should be within the path (folder tree) of search target.  
+`/` is the root folder, accepts any targets.
 
 # Operation
 

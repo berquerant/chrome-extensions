@@ -192,6 +192,9 @@ class Content extends React.Component<IContentProps, IContentState> {
       <div className="container-fluid">
         <header className="popup-header sticky-top">
           <div className="row">
+            <div className="col-8 search-wrapper">
+              <SearchBox onChange={(w) => this.handleSearchBoxChange(w)} />
+            </div>
             <div className="col-2 popover-wrapper">
               <CommonComponent.Popover
                 id="popover-bmctl-option"
@@ -199,9 +202,6 @@ class Content extends React.Component<IContentProps, IContentState> {
               />
             </div>
             <div className="col-2 popover-data-modal">{dataModal}</div>
-            <div className="col-8 search-wrapper">
-              <SearchBox onChange={(w) => this.handleSearchBoxChange(w)} />
-            </div>
           </div>
           <div className="row result-info justify-content-between">
             <div className="col">
