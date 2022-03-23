@@ -32,7 +32,7 @@ class OptionStateStorage implements IOptionStateStorage {
       .then((items) => this.newBuilder().fromObject(items).build());
   }
   async write(state: State.IOptionState): Promise<void> {
-    return this.storage.set(state as any);
+    return this.storage.set(state as any); // FIXME: interface into Record<string, unknown>
   }
   async update(
     state: State.IOptionState,

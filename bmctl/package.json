@@ -1,6 +1,6 @@
 {
   "name": "bmctl",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "Bookmark controller",
   "author": "berquerant",
   "homepage": "https://github.com/berquerant/chrome-extensions/bmctl",
@@ -9,7 +9,7 @@
     "watch": "webpack -w --config webpack.dev.js",
     "dev:build": "webpack --config webpack.dev.js",
     "dev:doc": "typedoc",
-    "dev:test": "jest --coverage --passWithNoTests",
+    "dev:test": "jest --coverage --passWithNoTests --silent false --verbose false",
     "dev:format": "prettier --write .",
     "dev:lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "dev": "npm-run-all -l --silent --max-parallel 4 -p dev:*",
@@ -58,6 +58,7 @@
   "dependencies": {
     "react": "^17.0.2",
     "react-bootstrap": "^1.6.1",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-select": "^5.2.2"
   }
 }

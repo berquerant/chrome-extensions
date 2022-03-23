@@ -88,10 +88,18 @@ export function nodeListToMap(xs: INodeList): INodeMap {
 
 /** A `Map<NodeId, INode>` wrapper. */
 export interface INodeMap {
+  /**
+   * Get `INode` by `NodeID`.
+   * This `INode` has `info.path`.
+   */
   get(id: NodeId): Option<INode>;
   set(node: INode): void;
   delete(id: NodeId): void;
   size(): number;
+  /**
+   * Yield all `INode`.
+   * These `INode` have `info.path`.
+   */
   values(): IterableIterator<INode>;
 }
 

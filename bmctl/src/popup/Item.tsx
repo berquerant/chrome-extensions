@@ -14,6 +14,7 @@ function BaseItem(props: {
   const url = props.item.info.url;
   const title = props.item.info.title;
   const timestamp = props.item.info.dateAdded;
+  const path = props.item.info.path;
   const a = (
     <a href={url} target="_blank" rel="noopener noreferrer">
       {title}
@@ -23,6 +24,9 @@ function BaseItem(props: {
   if (timestamp) {
     const t = new Date(timestamp);
     opts.push(`created at ${t.toLocaleString()}`);
+  }
+  if (path) {
+    opts.push(path.str);
   }
   const clipboardUrlIcon = (
     <svg

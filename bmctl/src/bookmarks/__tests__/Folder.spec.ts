@@ -177,7 +177,7 @@ describe("ISearcher", () => {
     it(name, async () => {
       const s = Folder.newISearcher(
         new MockScanner(src),
-        (_: Array<string>) => new MockFuzzySearcher()
+        new MockFuzzySearcher()
       );
       const got = await s.search({
         word: "word",

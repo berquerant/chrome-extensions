@@ -5,6 +5,8 @@ import * as Search from "@/bookmarks/Search";
 import * as State from "@/state/State";
 import * as Time from "@/common/Time";
 import * as Err from "@/common/Err";
+import { INodeList, INode } from "@/bookmarks/Common";
+import { ISearcher } from "@/bookmarks/Folder";
 
 /** A kind of settings. */
 const OptionTag = {
@@ -14,6 +16,7 @@ const OptionTag = {
   sortOrderType: "sort-order-type",
   filterAfter: "filter-after",
   filterBefore: "filter-before",
+  filterFolder: "filter-folder",
   querySourceMaxResult: "query-source-max-result",
   queryMaxResult: "query-max-result",
   saveButton: "save-options",
@@ -50,16 +53,23 @@ function OptionMapper(props: {
   toRow: (props: IOptionRowProps) => JSX.Element;
   onChange: (v: string) => void;
   value: string;
+  selectOptions?: { [key: string]: unknown };
 }): JSX.Element {
   const tag = props.tag;
   const id = String(tag);
-  const selectItems = (items: { [key: string]: unknown }) => (
+  const selectItems = (
+    items: { [key: string]: unknown },
+    shouldBeTop?: boolean,
+    isClearable?: boolean
+  ) => (
     <SelectItems
       id={id}
       items={items}
       className="option-table-select"
       onChange={props.onChange}
       value={props.value}
+      menuPlacement={shouldBeTop ? "top" : "auto"}
+      isClearable={isClearable}
     />
   );
   const inputItem = () => (
@@ -104,6 +114,11 @@ function OptionMapper(props: {
       return toRow("Filter After", dateItem());
     case OptionTag.filterBefore:
       return toRow("Filter Before", dateItem());
+    case OptionTag.filterFolder:
+      return toRow(
+        "Filter Folder",
+        selectItems(props.selectOptions, true, true)
+      ); // FIXME: dirty, should be css
   }
   throw new Err.UnknownError(`OptionTag: ${tag}`);
 }
@@ -120,6 +135,7 @@ interface IOptionBaseTableProps {
   toRow: (props: IOptionRowProps) => JSX.Element;
   defaultState: IOptionBaseTableState;
   render: (ps: IOptionBaseRenderProps) => JSX.Element;
+  folders: INodeList;
 }
 
 interface IOptionBaseTableState {
@@ -131,6 +147,7 @@ interface IOptionBaseTableState {
   querySourceMaxResult: string;
   filterAfter: string;
   filterBefore: string;
+  filterFolder: string;
 }
 
 class OptionBase extends React.Component<
@@ -156,6 +173,7 @@ class OptionBase extends React.Component<
           : "",
         filterAfter: "",
         filterBefore: "",
+        filterFolder: "",
       };
       s.filters
         .filter((x) => x.kind == "after")
@@ -170,6 +188,11 @@ class OptionBase extends React.Component<
           bs.filterBefore = Time.dateToTimestring(
             new Date(x["timestamp"] * 1000)
           );
+        });
+      s.filters
+        .filter((x) => x.kind == "folder")
+        .forEach((x) => {
+          bs.filterFolder = x["path"];
         });
       this.setState(bs);
     });
@@ -203,6 +226,12 @@ class OptionBase extends React.Component<
         });
       }
     }
+    {
+      filters.push({
+        kind: "folder",
+        path: s.filterFolder,
+      });
+    }
     b.filters(filters);
     this.props.store.write(b.build());
   }
@@ -232,9 +261,21 @@ class OptionBase extends React.Component<
       resetBtn: reset,
     });
   }
+  private getFolderOptions(): { [key: string]: unknown } {
+    return this.props.folders.reduce((acc, x) => {
+      const k = x.info.path.str;
+      acc[k] = k;
+      return acc;
+    }, {} as { [key: string]: unknown });
+  }
   private renderItems(): Array<JSX.Element> {
     const s = this.state;
-    const settings = [
+    const settings: Array<{
+      tag: OptionTag;
+      value: string;
+      onChange: (v: string) => void;
+      selectOptions?: { [key: string]: unknown };
+    }> = [
       {
         tag: OptionTag.queryType,
         value: s.queryType,
@@ -275,6 +316,12 @@ class OptionBase extends React.Component<
         value: s.filterBefore,
         onChange: (v: string) => this.setState({ filterBefore: v }),
       },
+      {
+        tag: OptionTag.filterFolder,
+        value: s.filterFolder,
+        onChange: (v: string) => this.setState({ filterFolder: v }),
+        selectOptions: this.getFolderOptions(),
+      },
     ];
     return settings.map((x) => (
       <OptionMapper
@@ -283,6 +330,7 @@ class OptionBase extends React.Component<
         value={x.value}
         onChange={x.onChange}
         toRow={this.props.toRow}
+        selectOptions={x.selectOptions ? x.selectOptions : undefined}
       />
     ));
   }
@@ -298,6 +346,7 @@ function defaultState(): IOptionBaseTableState {
     querySourceMaxResult: "",
     filterAfter: "",
     filterBefore: "",
+    filterFolder: "",
   };
 }
 
@@ -305,7 +354,24 @@ function defaultState(): IOptionBaseTableState {
 export function OptionPage(props: {
   store: StateStorage.IOptionStateStorage;
   newBuilder: () => State.IOptionStateBuilder;
+  folderSearcher: ISearcher;
 }): JSX.Element {
+  const [folders, setFolders] = React.useState([] as Array<INode>);
+  React.useEffect(() => {
+    const getFolders = async () => {
+      /*
+       * fetch all folders.
+       * number of folders is relatively smaller than bookmarks
+       * so leave filtering to caller
+       */
+      const fs = await props.folderSearcher.search({
+        word: "",
+      });
+      setFolders(fs);
+    };
+    getFolders();
+  }, []);
+
   const render = (r: IOptionBaseRenderProps) => (
     <div className="container">
       <h1 className="row">bmctl options</h1>
@@ -318,6 +384,7 @@ export function OptionPage(props: {
       </div>
     </div>
   );
+
   return (
     <OptionBase
       store={props.store}
@@ -325,6 +392,7 @@ export function OptionPage(props: {
       defaultState={defaultState()}
       render={render}
       toRow={(x) => <OptionPageRow {...x} />}
+      folders={folders}
     />
   );
 }
@@ -333,6 +401,7 @@ export function OptionPage(props: {
 export function OptionTable(props: {
   store: StateStorage.IOptionStateStorage;
   newBuilder: () => State.IOptionStateBuilder;
+  folders: INodeList;
   additionalClassName?: string;
 }): JSX.Element {
   const render = (r: IOptionBaseRenderProps) => (
@@ -355,6 +424,7 @@ export function OptionTable(props: {
       defaultState={defaultState()}
       render={render}
       toRow={(x) => <OptionTableRow {...x} />}
+      folders={props.folders}
     />
   );
 }

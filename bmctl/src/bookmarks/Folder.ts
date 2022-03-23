@@ -15,9 +15,9 @@ export interface ISearcher {
 
 export function newISearcher(
   scanner: Read.IScanner,
-  fuzzySearcherFactory: (keys: Array<string>) => IFuzzySearcher
+  fuzzySearcher: IFuzzySearcher
 ): ISearcher {
-  return new Searcher(scanner, fuzzySearcherFactory);
+  return new Searcher(scanner, fuzzySearcher);
 }
 
 type IFolderListSelector = Func.Mapper<Common.INodeList, Common.INodeList>;
@@ -25,7 +25,7 @@ type IFolderListSelector = Func.Mapper<Common.INodeList, Common.INodeList>;
 class Searcher implements ISearcher {
   constructor(
     private scanner: Read.IScanner,
-    private fuzzySearcherFactory: (keys: Array<string>) => IFuzzySearcher
+    private fuzzySearcher: IFuzzySearcher
   ) {}
 
   async search(query: IQuery): Promise<Common.INodeList> {
@@ -42,8 +42,8 @@ class Searcher implements ISearcher {
   }
 
   private selector(word: string): IFolderListSelector {
-    const fs = this.fuzzySearcherFactory(["info.path.str"]);
-    return (list: Common.INodeList): Common.INodeList => fs.search(list, word);
+    return (list: Common.INodeList): Common.INodeList =>
+      this.fuzzySearcher.search(list, word);
   }
 
   private compare(a: Common.INode, b: Common.INode): number {

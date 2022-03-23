@@ -92,6 +92,10 @@ Include specified date.
 Newest creation time of search target.
 Include specified date.
 
+## Filter Folder
+
+String that should be within the path (folder tree) of search target.
+
 # Operation
 
 Click `Operation` button to open a modal for operation to the current search result.

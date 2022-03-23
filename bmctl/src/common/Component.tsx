@@ -10,6 +10,8 @@ import { None, Some } from "@/common/Function";
 import "bootstrap-datepicker";
 import $ from "jquery";
 import * as Time from "@/common/Time";
+import Select from "react-select";
+import { MenuPlacement } from "react-select/dist/declarations/src/types";
 
 /**
  * Fade out effect wrapper.
@@ -128,6 +130,7 @@ export function DatePicker(props: {
  * A key is a text, a value is a value of an option.
  * @param props `id` is id of select
  * @param className class name of select
+ * @param value selected value
  */
 export function SelectItems<T>(props: {
   id: string;
@@ -135,26 +138,43 @@ export function SelectItems<T>(props: {
   className?: string;
   onChange?: (value: string) => void;
   value?: T;
+  menuPlacement?: MenuPlacement;
+  isClearable?: boolean;
 }): JSX.Element {
-  const options = Object.entries(props.items).map(([k, v]) => (
-    <option key={k} value={String(v)}>
-      {k}
-    </option>
-  ));
+  interface optionType {
+    value: string; // actual value
+    label: string; // display value
+  }
+  const options: Array<optionType> = Object.entries(props.items).map(
+    ([k, v]) => ({
+      value: String(v),
+      label: k,
+    })
+  );
+  const onChange = (newValue: optionType) => {
+    if (props.onChange) {
+      props.onChange(newValue ? newValue.value : "");
+    }
+  };
+  const value = (() => {
+    const r = Object.entries(props.items).find(([_, v]) => v == props.value);
+    if (!r) return undefined; // unknown or not selected yet
+    return {
+      value: String(r[1]),
+      label: r[0],
+    };
+  })();
   return (
-    <select
+    <Select
       id={props.id}
       key={props.id}
       className={props.className || ""}
-      onChange={(e) => {
-        if (props.onChange) {
-          props.onChange(e.currentTarget.value);
-        }
-      }}
-      value={props.value ? String(props.value) : ""}
-    >
-      {options}
-    </select>
+      onChange={onChange}
+      options={options}
+      value={value}
+      menuPlacement={props.menuPlacement ? props.menuPlacement : "auto"}
+      isClearable={props.isClearable ? props.isClearable : false}
+    />
   );
 }
 

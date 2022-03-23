@@ -17,12 +17,14 @@ import { BaseError } from "@/common/Err";
 import { ItemList } from "@/popup/Item";
 import { ItemCount, SearchDuration, SearchBox } from "@/popup/Search";
 import { DataModal } from "@/popup/Data";
+import * as Folder from "@/bookmarks/Folder";
 import "@/popup/Popup.scss";
 
 interface IContentProps {
   storage: StateStorage.IOptionStateStorage;
   storageListener: Storage.IStorageAreaListener;
   searcher: Search.ISearcher;
+  folderSearcher: Folder.ISearcher;
   remover: Write.IRemover;
   creator: Write.ICreator;
   scanner: Read.IScanner;
@@ -81,16 +83,20 @@ class Content extends React.Component<IContentProps, IContentState> {
     return f;
   }
   private getFolders(): void {
-    this.props.scanner
-      .scan()
+    /*
+     * fetch all folders.
+     * number of folders is relatively smaller than bookmarks
+     * so leave filtering to caller
+     */
+    this.props.folderSearcher
+      .search({
+        word: "",
+      })
       .then((r) =>
-        Array.from(r.values()).filter((x) => !x.info.url && x.id != "0")
-      ) // ignore bookmarks and root folder
-      .then((r) => {
         this.setState({
           folders: r,
-        });
-      })
+        })
+      )
       .catch((e) => this.handleCaughtError(e));
   }
   private executeSearch(): void {
@@ -163,6 +169,7 @@ class Content extends React.Component<IContentProps, IContentState> {
       <OptionComponent.OptionTable
         store={this.props.storage}
         newBuilder={this.props.newBuilder}
+        folders={this.state.folders}
         additionalClassName="table-sm"
       />
     );
@@ -227,6 +234,10 @@ chrome.tabs.query({ active: true, currentWindow: true }, (_) => {
   const scanner = Read.newIScanner(api);
   const remover = Write.newIRemover(api);
   const creator = Write.newICreator(api);
+  const folders = Folder.newISearcher(
+    scanner,
+    newIFuzzySearcher(["info.path.str"])
+  );
   const searcher = Search.newISearcher(
     scanner,
     newIFuzzySearcher(["info.title", "info.url"])
@@ -235,6 +246,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (_) => {
     <Content
       storage={storage}
       searcher={searcher}
+      folderSearcher={folders}
       remover={remover}
       creator={creator}
       scanner={scanner}
