@@ -120,10 +120,36 @@ Click `Delete` button to delete checked items.
 
 # Install
 
-`make build` and load this extension from `bmctl/dist`.
+```
+export NODE_OPTIONS=--openssl-legacy-provider
+make build
+```
+
+Load this extension from `bmctl/dist`.
+
+# Requirements
+
+- node v18.12.1
 
 # Development
 
-`npm ci`, then you can start development.
+`export NODE_OPTIONS=--openssl-legacy-provider` and `npm ci`, then you can start development.
 
 `make dev` is convenient to check and build source for development.
+
+## Version
+
+Update
+
+- [package.json version](./package.json)
+- [manifest.json version](dist/manifest.json)
+
+then
+
+```
+make clean
+npm i
+make dev
+```
+
+and create tag like `bmctlX.Y.Z`.
